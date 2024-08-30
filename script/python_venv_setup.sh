@@ -7,7 +7,7 @@ sudo apt-get install xclip -y
 
 
 # python venv
-VENV_DIR="$HOME/Documents/Password"
+VENV_DIR="path/to/project"
 cd $VENV_DIR
 
 # create python venv
