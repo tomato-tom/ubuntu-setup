@@ -24,5 +24,5 @@ udevadm trigger
 # 確認
 # 設定反映されるまでいくらかタイムラグある
 # 再起動は不要
-# udevadm info /dev/input/by-path/*-usb-*-kbd | grep KEYBOARD_KEY
+udevadm info /dev/input/by-path/*-usb-*-kbd | grep KEYBOARD_KEY
 
