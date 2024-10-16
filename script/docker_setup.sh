@@ -27,11 +27,8 @@ sudo service docker start
 #sudo systemctl status docker
 
 sudo usermod -aG docker $USER
-newgrp docker
+echo "Please log out and log back in to apply the group changes."
 
-# Verify that the Docker Engine installation is successful by running the hello-world image.
-docker --version
-docker run hello-world
 
 # Uninstall the Docker Engine, CLI, containerd, and Docker Compose packages:
 #sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
