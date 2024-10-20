@@ -1,5 +1,4 @@
 #!/bin/bash
-# LXDインストールから動作確認まで
 
 # LXDをインストール
 if ! sudo snap install lxd; then
