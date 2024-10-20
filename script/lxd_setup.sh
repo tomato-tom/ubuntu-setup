@@ -11,24 +11,21 @@ fi
 
 # 現在のユーザーをLXDグループに追加
 sudo usermod -aG lxd "$USER"
-newgrp lxd
-getent group lxd | grep "$USER"
 
 # LXDの初期設定
-lxd init --minimal
-
-# Ubuntu 24.04のイメージ確認
-lxc image list ubuntu:
-lxc image list ubuntu: 24.04 architecture=$(uname -m)
+sudo lxd init --minimal
 
 # コンテナの作成と基本操作
 echo "Launch a container called mycontainer..."
-lxc launch ubuntu:24.04 mycontainer
-lxc list
-lxc exec mycontainer -- cat /etc/*release
+sudo lxc launch ubuntu:24.04 mycontainer
+sudo lxc list
+sudo lxc exec mycontainer -- cat /etc/*release
 
 # コンテナの停止と削除
 echo "Delete the container"
-lxc stop mycontainer
-lxc delete mycontainer
+sudo lxc stop mycontainer
+sudo lxc delete mycontainer
+
+# ユーザーに再ログインを促す
+echo "User $USER has been added to the lxd group. Please log out and log back in for changes to take effect."
 

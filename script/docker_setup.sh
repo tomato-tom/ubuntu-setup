@@ -29,7 +29,6 @@ sudo service docker start
 sudo usermod -aG docker $USER
 echo "Please log out and log back in to apply the group changes."
 
-
 # Uninstall the Docker Engine, CLI, containerd, and Docker Compose packages:
 #sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
 
