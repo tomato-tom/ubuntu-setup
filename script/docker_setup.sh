@@ -1,12 +1,11 @@
 #!/bin/bash -e
-# Docker セットアップ
+
 # Ubuntu 24.04
 # https://docs.docker.com/engine/install/ubuntu/
 
 # Add Docker's official GPG key:
 sudo apt-get update
 
-#sudo apt install apt-transport-https ca-certificates curl software-properties-common
 sudo apt-get install ca-certificates curl -y
 
 sudo install -m 0755 -d /etc/apt/keyrings
