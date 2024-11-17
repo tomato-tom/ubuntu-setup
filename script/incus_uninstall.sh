@@ -28,6 +28,12 @@ systemctl daemon-reload
 echo "パッケージを削除中..."
 apt purge -y incus || true
 apt autoremove -y || true
+apt clean
+
+# Zabblyのリポジトリ設定の削除
+echo "リポジトリ設定を削除中..."
+rm -f /etc/apt/keyrings/zabbly.asc
+rm -f /etc/apt/sources.list.d/zabbly-incus-stable.sources
 
 # 設定ファイルとディレクトリの削除
 echo "設定ファイルとディレクトリを削除中..."
@@ -42,11 +48,6 @@ rm -rf /root/.config/incus
 rm -rf /root/.cache/incus
 rm -rf /run/incus
 rm -rf /run/lxc/lock/var/lib/incus
-
-# Zabblyのリポジトリ設定の削除
-echo "リポジトリ設定を削除中..."
-rm -f /etc/apt/keyrings/zabbly.asc
-rm -f /etc/apt/sources.list.d/zabbly-incus-stable.sources
 
 # ネットワークブリッジの削除
 echo "ネットワークブリッジを削除中..."
