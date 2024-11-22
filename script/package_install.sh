@@ -13,9 +13,11 @@ sudo systemctl daemon-reload
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
 
 # OhMyBashで.bashrc作成されるから、その後Alias追記
+echo "" >> $HOME/.bashrc
+echo "# Alias" >> $HOME/.bashrc
 echo "alias py=python3" >> $HOME/.bashrc
 echo "alias python=python3" >> $HOME/.bashrc
-echo "alias clip=\"xclip -selection clipboard\"" >> $HOME/.bashrc
+echo 'alias clip="xclip -selection clipboard"' >> $HOME/.bashrc
 echo "alias ull=ultralist" >> $HOME/.bashrc
-echo "export PATH=\"$PATH:$HOME.local/bin\"" >> $HOME/.bashrc
+echo 'export PATH="$PATH:$HOME/.local/bin"' >> $HOME/.bashrc
 
