@@ -3,6 +3,7 @@
 # キーボードのcapslockをcontrolにマッピング
 # Ubuntu 22.04~24.04
 # Apple Macbook Air 6.1
+# Apple Macmini6.1
 
 # スクリプトがroot権限で実行されているかチェック
 if [ "$(id -u)" -ne 0 ]; then
