@@ -3,10 +3,9 @@
 sudo apt-get update
 
 # 追加でインストールするパッケージ
-sudo apt-get install curl tree git -y
-sudo apt-get install fdupes vim-gtk3 -y
-sudo apt-get install xclip -y
-
+sudo apt-get install curl tree git htop tldr fzf -y
+sudo apt-get install fdupes vim-gtk3 xclip -y
+sudo apt-get install debootstrap inotify-tools -y
 sudo systemctl daemon-reload
 
 # Oh My Bash
