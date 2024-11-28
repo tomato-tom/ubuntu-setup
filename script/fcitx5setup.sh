@@ -1,25 +1,24 @@
 #!/bin/bash -e
-# Ubuntu24.04
-# OSインストール時のfcitx5セットアップ
-# だいたいOK
 
-# パッケージのアップグレード
+# The script is essentially setting up Fcitx5 input method for Ubuntu 24.04.
+# Installing the necessary packages, configuring auto-start,
+# handling GNOME-specific environment variables, and creating a configuration file for Fcitx5.
+
+# Install fcitx5 and necessary packages
 sudo apt-get update
-
-# fcitx5と必要なパッケージをインストール
 sudo apt-get install -y fcitx5 fcitx5-mozc fcitx5-config-qt
 
-# fcitx5を入力メソッドに設定
+# Set fcitx5 as the input method
 sudo im-config -n fcitx5
 
-# ~/.profileにfcitx5の自動起動設定を追加
+# Add auto-start setting for fcitx5 to ~/.profile
 if ! grep -q "fcitx5" "$HOME/.profile"; then
     echo "fcitx5 > /dev/null 2>&1 &" >> "$HOME/.profile"
 fi
 
 source "$HOME/.profile"
 
-# gnome特有の環境変数
+# GNOME specific environment variables
 # https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland#GNOME
 if ! grep -q "# fcitx5" "$HOME/.bashrc"; then
 cat << EOF >> $HOME/.bashrc
@@ -34,12 +33,25 @@ source "$HOME/.bashrc"
 
 sleep 1
 
-# fcitx5の設定ファイルを作成する
-#mkdir -p "$HOME/.config/fcitx5" # fcitx5のインストール時に作成されてる
+# Create the fcitx5 configuration file
+# mkdir -p "$HOME/.config/fcitx5" 
+# This directory is automatically created during the fcitx5 installation
 
 CONFIG_DIR="$HOME/.config/fcitx5"
 CONFIG_FILE="$CONFIG_DIR/profile"
 BACKUP_FILE="$CONFIG_DIR/profile.bak"
+
+# Wait for the fcitx5 configuration file to be created
+count=0
+while [ ! -f "$CONFIG_FILE" ]; do
+    if [ $count -gt 30 ]; then
+        echo "Timeout: Fcitx5 configuration file not created after 30 seconds."
+        exit 1
+    fi
+    echo "Waiting for fcitx5 configuration file to be created..."
+    sleep 1
+    count=$((count + 1))
+done
 
 # Backup existing configuration
 if [ -f "$CONFIG_FILE" ]; then

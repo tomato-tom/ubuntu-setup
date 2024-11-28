@@ -1,42 +1,41 @@
 #!/bin/bash
 
-# エラーが発生したら即座に終了
-#set -e
+set -e
 
-# root権限チェック
+# Check for root privileges
 if [ "$EUID" -ne 0 ]; then
-    echo "このスクリプトはroot権限で実行する必要があります。"
-    echo "sudo $0 を実行してください。"
+    echo "This script needs to be run with root privileges."
+    echo "Please run 'sudo $0'."
     exit 1
 fi
 
-echo "incusのアンインストールを開始します..."
+echo "Starting the uninstallation of incus..."
 
-# サービスの停止
-echo "サービスを停止中..."
+# Stop the services
+echo "Stopping services..."
 systemctl stop incus.service || true
 systemctl stop incus.socket || true
 systemctl stop incus-user.service || true
 systemctl stop incus-user.socket || true
 systemctl stop incus-lxcfs.service || true
 
-# デーモンのリロード
-echo "systemdデーモンをリロード中..."
+# Reload systemd daemon
+echo "Reloading systemd daemon..."
 systemctl daemon-reload
 
-# パッケージの削除
-echo "パッケージを削除中..."
+# Remove the packages
+echo "Removing packages..."
 apt purge -y incus || true
 apt autoremove -y || true
 apt clean
 
-# Zabblyのリポジトリ設定の削除
-echo "リポジトリ設定を削除中..."
+# Remove Zabbly repository settings
+echo "Removing repository settings..."
 rm -f /etc/apt/keyrings/zabbly.asc
 rm -f /etc/apt/sources.list.d/zabbly-incus-stable.sources
 
-# 設定ファイルとディレクトリの削除
-echo "設定ファイルとディレクトリを削除中..."
+# Remove configuration files and directories
+echo "Removing configuration files and directories..."
 rm -rf /home/*/.config/incus
 rm -rf /home/*/.cache/incus
 rm -rf /etc/logrotate.d/incus
@@ -49,13 +48,15 @@ rm -rf /root/.cache/incus
 rm -rf /run/incus
 rm -rf /run/lxc/lock/var/lib/incus
 
-# ネットワークブリッジの削除
-echo "ネットワークブリッジを削除中..."
+# Remove network bridges
+echo "Removing network bridges..."
 for bridge in $(ip link show | grep 'incusbr' | cut -d: -f2 | awk '{print $1}'); do
     ip link delete $bridge || true
 done
 
-# incusグループを削除
+# Remove the incus group
 groupdel incus
+groupdel incus-admin
 
-echo "アンインストール完了"
+echo "Uninstallation complete."
+

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# LXDをインストール
+# Install LXD
 if ! sudo snap install lxd; then
     echo "LXD is already installed. Refreshing..."
     sudo snap refresh lxd
@@ -8,23 +8,22 @@ else
     echo "LXD has been installed successfully."
 fi
 
-# 現在のユーザーをLXDグループに追加
+# Add current user to the LXD group
 sudo usermod -aG lxd "$USER"
 
-# LXDの初期設定
+# Default setup of LXD
 sudo lxd init --minimal
 
-# コンテナの作成と基本操作
-echo "Launch a container called mycontainer..."
+# Launch container to check operation
+echo "Launch a container..."
 sudo lxc launch ubuntu:24.04 mycontainer
 sudo lxc list
 sudo lxc exec mycontainer -- cat /etc/*release
+sudo lxc exec mycontainer -- uname -a
 
-# コンテナの停止と削除
 echo "Delete the container"
 sudo lxc stop mycontainer
 sudo lxc delete mycontainer
 
-# ユーザーに再ログインを促す
-echo "User $USER has been added to the lxd group. Please log out and log back in for changes to take effect."
+echo "Please re-login to apply the user to the LXD group"
 

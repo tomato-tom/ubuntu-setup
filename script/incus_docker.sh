@@ -1,43 +1,39 @@
 #!/bin/bash -e
 
-# dockerイメージをlxcコンテナで使えるように
+# To run this script without sudo, the user must belong to the 'incus' group
+
+# Add DockerHub to the Incus remote server
 if ! incus remote list | grep -q 'https://docker.io'; then
     incus remote add docker https://docker.io --protocol=oci
 fi
 
-# nginxのdockerイメージをlxcコンテナでたてる
+incus remote list
+
+# Launch a Docker container with nginx using Incus
 if ! incus list | grep -q 'my-nginx'; then
     incus launch docker:nginx my-nginx
 fi
 
-while ! incus list | grep -q my-nginx; do
-    sleep 1
-done
-echo my-nginx running
-
-# ubuntu 24.04 コンテナ起動 
+# Launch an Ubuntu 24.04 container
 if ! incus list | grep -q 'my-noble'; then
     incus launch images:ubuntu/noble my-noble
 fi
 
-while ! incus list | grep -q my-noble; do
-    sleep 1
-done
-echo my-noble running
+incus list
 
-# nginxコンテナのIPアドレスを取得するまで待機
+# Wait until the IP address for the nginx container is assigned
 addr=""
 while [ -z "$addr" ]; do
     echo "Waiting for IP address to be assigned to my-nginx..."
     addr=$(incus info my-nginx | grep -E 'inet:.*global' | cut -d ':' -f2 | cut -d'/' -f1)
-    sleep 1  # 1秒待機
+    sleep 1  # Wait for 1 second
 done
 
-# ポート80で接続テスト
+# Test connection on port 80
 incus exec my-noble -- nc -zv $addr 80
 
-# 終了時にコンテナを削除しますか？
-echo "終了時にコンテナを削除しますか？(y/n): "
+# Ask if the user wants to delete the containers upon exit
+echo "Do you want to delete the containers upon exit? (y/n): "
 read input
 
 if [ "$input" == 'y' ] || [ -z "$input" ]; then
@@ -46,3 +42,4 @@ if [ "$input" == 'y' ] || [ -z "$input" ]; then
     incus stop my-nginx
     incus delete my-nginx
 fi
+

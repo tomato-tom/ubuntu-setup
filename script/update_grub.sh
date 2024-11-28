@@ -1,21 +1,22 @@
 #!/bin/bash
 
-# 現在のUEFIブートエントリを確認
+# Check current UEFI boot entry
 efibootmgr
 echo
 
-# バックアップを作成
+# Crate backup
 sudo cp /etc/default/grub /etc/default/grub.bak
 
-# 次回も現在と同じOS起動
+# Next time the same OS startup as now
 sudo sed -i 's/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/' /etc/default/grub
 sudo sed -i '/^GRUB_DEFAULT=/aGRUB_SAVEDEFAULT=true' /etc/default/grub
-# grubメニューのタイムアウト10秒
+
+# Set grub menu timeout to 10 seconds
 sudo sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=10/' /etc/default/grub
 sudo sed -i 's/^GRUB_TIMEOUT_STYLE=.*/GRUB_TIMEOUT_STYLE=menu/' /etc/default/grub
 
-# 設定を反映
+# Apply settings
 sudo update-grub
 
-echo "GRUB設定を更新しました。再起動してください。"
+echo "Updated GRUB settings. Please reboot now."
 
