@@ -25,4 +25,5 @@ sudo incus admin init --minimal
 sudo gpasswd -a $USER incus
 
 echo "Please re-login to apply incus group to current user"
+echo "Or you can apply it temporarily with the command: newgrp incus"
 
