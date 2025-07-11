@@ -1,0 +1,20 @@
+[2025-07-11 16:01:35] [INFO] [./package_install.sh] Updating package lists...
+[2025-07-11 16:01:43] [INFO] [./package_install.sh] === Installing マルチメディア ===
+[2025-07-11 16:01:43] [INFO] [./package_install.sh] Packages: vlc 
+[2025-07-11 16:01:43] [INFO] [./package_install.sh] Successfully installed マルチメディア
+[2025-07-11 16:01:43] [INFO] [./package_install.sh] === Installing 開発ツール ===
+[2025-07-11 16:01:43] [INFO] [./package_install.sh] Packages: git curl gcc neovim tmux debootstrap 
+[2025-07-11 16:01:44] [INFO] [./package_install.sh] Successfully installed 開発ツール
+[2025-07-11 16:01:44] [INFO] [./package_install.sh] === Installing 日本語入力 ===
+[2025-07-11 16:01:44] [INFO] [./package_install.sh] Packages: fcitx5 fcitx5-mozc fcitx5-config-qt 
+[2025-07-11 16:01:45] [INFO] [./package_install.sh] Successfully installed 日本語入力
+[2025-07-11 16:01:45] [INFO] [./package_install.sh] === Installing ユーティリティ ===
+[2025-07-11 16:01:45] [INFO] [./package_install.sh] Packages: wl-clipboard translate-shell lvm2 tree htop tldr fzf fdupes inotify-tools 
+[2025-07-11 16:01:45] [INFO] [./package_install.sh] Successfully installed ユーティリティ
+[2025-07-11 16:01:45] [INFO] [./package_install.sh] === Installing システム監視ツール ===
+[2025-07-11 16:01:45] [INFO] [./package_install.sh] Packages: powerstat lm-sensors stress-ng hw-probe intel-gpu-tools sysbench fio 
+[2025-07-11 16:01:46] [INFO] [./package_install.sh] Successfully installed システム監視ツール
+[2025-07-11 16:01:46] [INFO] [./package_install.sh] === Installing KVM仮想環境 ===
+[2025-07-11 16:01:46] [INFO] [./package_install.sh] Packages: qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin 
+[2025-07-11 16:01:47] [INFO] [./package_install.sh] Successfully installed KVM仮想環境
+[2025-07-11 16:01:47] [INFO] [./package_install.sh] Cleaning up unused packages...

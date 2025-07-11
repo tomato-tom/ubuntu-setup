@@ -39,7 +39,6 @@ sleep 1
 
 CONFIG_DIR="$HOME/.config/fcitx5"
 CONFIG_FILE="$CONFIG_DIR/profile"
-BACKUP_FILE="$CONFIG_DIR/profile.bak"
 
 # Wait for the fcitx5 configuration file to be created
 count=0
@@ -52,16 +51,6 @@ while [ ! -f "$CONFIG_FILE" ]; do
     sleep 1
     count=$((count + 1))
 done
-
-# Backup existing configuration
-if [ -f "$CONFIG_FILE" ]; then
-    echo "Backing up existing configuration..."
-    cp "$CONFIG_FILE" "$BACKUP_FILE"
-    echo "Backup created at $BACKUP_FILE"
-else
-    echo "No existing configuration found to back up."
-    touch $CONFIG_FILE
-fi
 
 echo "Creating new configuration..."
 
@@ -89,10 +78,6 @@ Layout=
 [GroupOrder]
 0=Default
 EOF
-
-# Restoring the backup if needed
-# cp "$BACKUP_FILE" "$CONFIG_FILE"
-# echo "Configuration restored from backup."
 
 echo "Restart Fcitx5..."
 fcitx5 -r &

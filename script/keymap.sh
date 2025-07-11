@@ -5,12 +5,17 @@
 # Ubuntu 22.04~24.04
 # Apple MacBook Air 6.1
 # Apple Mac mini 6.1
+# Gigabyte H87HD3 
 
 # Check if the script is being run with root privileges
 if [ "$(id -u)" -ne 0 ]; then
     echo "This script must be run as root."
     exit 1
 fi
+
+# Archlinux required usbutils package for lsusb
+#pacman -Syu
+#pacman -S --noconfirm usbutils
 
 # Display connected keyboard devices
 echo "Connected keyboard devices:"
@@ -58,7 +63,6 @@ udevadm trigger
 
 echo "Applying configuration..."
 
-# ---- The following commands are not tested ---------------
 # Wait and check for the configuration to take effect
 max_wait_time=10
 wait_time=0
