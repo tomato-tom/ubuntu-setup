@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# =============================================================================
+#
 # This script does the following:
 # 
 #   * It checks the currently installed version of Obsidian.
@@ -10,6 +12,7 @@
 # ----------------------------------------------------------------------------
 
 #set -x # debug
+set -e
 
 # Directory where Obsidian's AppImage is installed
 INSTALL_DIR="$HOME/.local/share/obsidian"
@@ -26,8 +29,6 @@ else
     LOCAL_VERSION=$(basename "$LOCAL_APPIMAGE" | sed -E 's/Obsidian-([0-9]+\.[0-9]+\.[0-9]+)\.AppImage/\1/')
 fi
 
-set -e
-
 # Fetch the latest version information from GitHub repository
 LATEST_VERSION=$(curl -s "$JSON_URL" | jq -r '.latestVersion')
 DOWNLOAD_URL=$(curl -s "$JSON_URL" | jq -r '.downloadUrl')
@@ -35,6 +36,8 @@ DOWNLOAD_URL=$(curl -s "$JSON_URL" | jq -r '.downloadUrl')
 # Check if the local version is the same as the latest version
 if [ "$LOCAL_VERSION" == "" ]; then
     echo "Installing for the first time"
+    sudo apt update
+    sudo apt install libfuse2t64 -y
 elif [ "$LOCAL_VERSION" == "$LATEST_VERSION" ]; then
     echo "The latest version ($LATEST_VERSION) is already installed."
     exit 0
