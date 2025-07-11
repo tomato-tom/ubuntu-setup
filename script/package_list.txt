@@ -1,0 +1,48 @@
+# Packages for desktop environment
+
+# Development tools
+git               # Version control system
+curl              # HTTP client
+gcc               # C compiler
+neovim            # Text editor
+tmux              # Terminal multiplexer
+debootstrap       # Basic system bootstrap tool
+
+# Utilities
+wl-clipboard      # Wayland clipboard
+translate-shell   # Translation tool
+lvm2              # Logical volume management
+tree              # Directory tree viewer
+htop              # Process viewer
+tldr              # Simplified man pages
+fzf               # Fuzzy finder
+fdupes            # Duplicate file finder
+inotify-tools     # Filesystem event monitoring
+
+# KVM virtualization
+qemu-kvm              # KVM virtualization
+libvirt-daemon-system # libvirt daemon
+libvirt-clients       # libvirt clients
+bridge-utils          # Network bridge management
+virtinst              # Virtual machine installer
+libosinfo-bin         # VM OS information database
+
+# Japanese input
+fcitx5                # Input method framework
+fcitx5-mozc           # Mozc input method
+fcitx5-config-qt      # Fcitx5 configuration tool (Qt)
+
+# Multimedia
+vlc                   # Media player
+
+# System monitoring tools
+powerstat             # Power usage statistics
+lm-sensors            # Hardware sensors
+stress-ng             # System stress tester
+hw-probe              # Hardware probe tool
+intel-gpu-tools       # Intel GPU diagnostics
+
+# Benchmarking tools
+sysbench              # System benchmark
+fio                   # Storage I/O tester
+
