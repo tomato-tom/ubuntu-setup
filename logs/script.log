@@ -41,3 +41,26 @@
 [2025-07-11 17:21:00] [INFO] [./package_install.sh] Packages: qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin 
 [2025-07-11 17:21:00] [INFO] [./package_install.sh] Successfully installed KVM virtualization
 [2025-07-11 17:21:00] [INFO] [./package_install.sh] Cleaning up unused packages...
+[2025-07-12 07:10:27] [INFO] [./package_install.sh] Updating package lists...
+[2025-07-12 07:10:40] [INFO] [./package_install.sh] === Installing Development tools ===
+[2025-07-12 07:10:40] [INFO] [./package_install.sh] Packages: git curl gcc neovim tmux debootstrap 
+[2025-07-12 07:10:40] [INFO] [./package_install.sh] Successfully installed Development tools
+[2025-07-12 07:10:40] [INFO] [./package_install.sh] === Installing Multimedia ===
+[2025-07-12 07:10:40] [INFO] [./package_install.sh] Packages: vlc 
+[2025-07-12 07:10:41] [INFO] [./package_install.sh] Successfully installed Multimedia
+[2025-07-12 07:10:41] [INFO] [./package_install.sh] === Installing Benchmarking tools ===
+[2025-07-12 07:10:41] [INFO] [./package_install.sh] Packages: sysbench fio 
+[2025-07-12 07:10:42] [INFO] [./package_install.sh] Successfully installed Benchmarking tools
+[2025-07-12 07:10:42] [INFO] [./package_install.sh] === Installing System monitoring tools ===
+[2025-07-12 07:10:42] [INFO] [./package_install.sh] Packages: powerstat lm-sensors stress-ng hw-probe intel-gpu-tools 
+[2025-07-12 07:10:43] [INFO] [./package_install.sh] Successfully installed System monitoring tools
+[2025-07-12 07:10:43] [INFO] [./package_install.sh] === Installing Japanese input ===
+[2025-07-12 07:10:43] [INFO] [./package_install.sh] Packages: fcitx5 fcitx5-mozc fcitx5-config-qt 
+[2025-07-12 07:10:43] [INFO] [./package_install.sh] Successfully installed Japanese input
+[2025-07-12 07:10:43] [INFO] [./package_install.sh] === Installing Utilities ===
+[2025-07-12 07:10:43] [INFO] [./package_install.sh] Packages: wl-clipboard translate-shell lvm2 tree htop tldr fzf fdupes inotify-tools 
+[2025-07-12 07:10:44] [INFO] [./package_install.sh] Successfully installed Utilities
+[2025-07-12 07:10:44] [INFO] [./package_install.sh] === Installing KVM virtualization ===
+[2025-07-12 07:10:44] [INFO] [./package_install.sh] Packages: qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin 
+[2025-07-12 07:10:45] [INFO] [./package_install.sh] Successfully installed KVM virtualization
+[2025-07-12 07:10:45] [INFO] [./package_install.sh] Cleaning up unused packages...
