@@ -1,21 +1,25 @@
 #!/bin/bash
-
+# lib/logger.sh
+#
 # Usage example:
-# source ../lib/logger.sh $0
-# log info "start myscript"
-# log warn "something wrong"
-# log error "file not found: file"
+#   source ../lib/logger.sh $0
+#   log info "start myscript"
+#   log warn "something wrong"
+#   log error "file not found: file"
 #
 # Directory structure:
-# script/myscript
-# lib/logger.sh      # This script
-# logs/script.log
+#   script/*.sh
+#   lib/logger.sh      # This script
+#   logs/script.log
 
 # Log file configuration
 SOURCE_SCRIPT=$1
-LOG_FILE="../logs/script.log"
+LOG_DIR="$(dirname "${BASH_SOURCE[0]}")/../logs"
+LOG_FILE="$LOG_DIR/script.log"
 LOG_MAX_SIZE=$((1024*1024))  # 1MB (in bytes)
 LOG_MAX_FILES=3              # Maximum number of log files to keep
+
+mkdir -p "$LOG_DIR"
 
 # Color coding based on log level
 COLOR_INFO="\033[32m"    # Green
