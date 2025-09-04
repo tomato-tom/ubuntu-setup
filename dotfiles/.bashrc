@@ -1,0 +1,140 @@
+# ~/.bashrc
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# ヒストリー設定
+HISTSIZE=10000
+HISTFILESIZE=20000
+HISTCONTROL=ignoreboth:erasedups
+shopt -s histappend  # 複数セッションでヒストリーを共有
+
+# Colors
+declare -A COLORS=(
+    # 基本色（既存との互換性）
+    ["RED"]="\033[0;31m"
+    ["GREEN"]="\033[0;32m"
+    ["YELLOW"]="\033[0;33m"
+    ["BLUE"]="\033[0;34m"
+    ["RESET"]="\033[0m"
+    
+    # 256色の鮮やかな色
+    ["CYAN"]="\033[38;5;51m"        # 明るいシアン
+    ["ORANGE"]="\033[38;5;208m"     # オレンジ
+    ["PURPLE"]="\033[38;5;135m"     # 紫
+    ["LIME"]="\033[38;5;118m"       # ライムグリーン
+    ["PINK"]="\033[38;5;205m"       # ピンク
+    ["GOLD"]="\033[38;5;220m"       # ゴールド
+    ["AQUA"]="\033[38;5;87m"        # アクア
+)
+
+# Gitプロンプト設定
+GIT_PS1_SHOWDIRTYSTATE=true
+GIT_PS1_SHOWSTASHSTATE=true
+GIT_PS1_SHOWUNTRACKEDFILES=true
+GIT_PS1_SHOWUPSTREAM="auto"
+GIT_PS1_SHOWCOLORHINTS=true
+
+# Git Prompt 機能の読み込み
+if [ -f /usr/lib/git-core/git-sh-prompt ]; then
+    source /usr/lib/git-core/git-sh-prompt
+fi
+
+prompt_type="normal"  # default
+
+# プロンプト設定関数
+# prompt_type:
+#   normal
+#   minimal
+set_prompt() {
+    if [ "$prompt_type" == "minimal" ]; then
+        PS1="$ "
+        return 0
+    fi
+
+    local EXIT_CODE="$?"
+    local prompt_parts=()
+    
+    # chroot/nspawn 環境検出??
+    if [ -f /etc/debian_chroot ] || [ -n "$container" ]; then
+        local chroot_name="chroot"
+        [ -f /etc/debian_chroot ] && chroot_name=$(cat /etc/debian_chroot)
+        prompt_parts+=("${COLORS[CYAN]}[${chroot_name}]${COLORS[RESET]}")
+    fi
+
+    # 基本プロンプト
+    local user="\[${COLORS[LIME]}\]\u"
+    local at="\[${COLORS[GOLD]}\]@"
+    local host="\[${COLORS[CYAN]}\]\h\[${COLORS[RESET]}\]"
+    local location="\[${COLORS[AQUA]}\][\[${COLORS[PURPLE]}\]\w\[${COLORS[AQUA]}\]]\[${COLORS[RESET]}\]"
+    local str="\[${COLORS[ORANGE]}\]\\$ \[${COLORS[RESET]}\]"
+
+    prompt_parts+=("${user}${at}${host} ${location}")
+    
+    # Git リポジトリ情報
+    local git_info=$(__git_ps1 "%s")
+    if [ -n "$git_info" ]; then
+        git_info=${git_info//=/}
+        prompt_parts+=("(${git_info})")
+    fi
+
+    # 終了コード表示（0以外のとき）
+    if [ $EXIT_CODE -ne 0 ]; then
+        prompt_parts+=("${COLORS[RED]}[exit:${EXIT_CODE}]${COLORS[RESET]}")
+    fi
+
+    prompt_parts+=("\n${str}")
+
+    PS1="${prompt_parts[*]}"
+}
+
+PROMPT_COMMAND="set_prompt"
+
+switch_prompt() {
+    local type="$1"
+
+    case "$type" in
+    "minimal"|"min")
+        prompt_type="minimal"
+        ;;
+    *)
+        prompt_type="normal"
+        ;;
+    esac
+}
+
+alias swp="switch_prompt"
+
+# Alias
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+
+# 便利なエイリアス
+alias ll='ls -thl'
+alias la='ls -thal'
+alias l='ls -th'
+alias df='df -h'
+alias du='du -sh'
+alias free='free -h'
+
+# alias
+alias py=python3
+alias python=python3
+alias clip="wl-copy"
+alias paste="wl-paste"
+
+
+# key bind
+bind "set completion-ignore-case on"    # Tab キーで大文字小文字を無視して補完
+bind 'TAB:menu-complete'                # 即座にコマンド補完
+bind '"\e[Z": menu-complete-backward'   # Shift + Tab で逆順補完
+bind 'set show-all-if-ambiguous on'  # 曖昧な補完時に候補を即表示
+
+# 環境変数
+[ -d "$HOME/.local/bin" ] || mkdir "$HOME/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
+## fcitx5
+export XMODIFIERS=@im=fcitx
+export QT_IM_MODULE=fcitx
+export GTK_IM_MODULE=fcitx
+

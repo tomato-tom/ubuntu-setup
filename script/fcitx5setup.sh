@@ -5,8 +5,10 @@
 # handling GNOME-specific environment variables, and creating a configuration file for Fcitx5.
 
 # Install fcitx5 and necessary packages
-sudo apt-get update
-sudo apt-get install -y fcitx5 fcitx5-mozc fcitx5-config-qt
+if command -v fcitx5 >/dev/null; then
+    sudo apt-get update
+    sudo apt-get install -y fcitx5 fcitx5-mozc fcitx5-config-qt
+fi
 
 # Set fcitx5 as the input method
 sudo im-config -n fcitx5
@@ -34,18 +36,15 @@ source "$HOME/.bashrc"
 sleep 1
 
 # Create the fcitx5 configuration file
-# mkdir -p "$HOME/.config/fcitx5" 
-# This directory is automatically created during the fcitx5 installation
-
 CONFIG_DIR="$HOME/.config/fcitx5"
 CONFIG_FILE="$CONFIG_DIR/profile"
 
 # Wait for the fcitx5 configuration file to be created
 count=0
 while [ ! -f "$CONFIG_FILE" ]; do
-    if [ $count -gt 30 ]; then
-        echo "Timeout: Fcitx5 configuration file not created after 30 seconds."
-        exit 1
+    if [ $count -gt 5 ]; then
+        echo "Timeout: Fcitx5 configuration file not created after 5 seconds."
+        mkdir -p $CONFIG_DIR
     fi
     echo "Waiting for fcitx5 configuration file to be created..."
     sleep 1
@@ -54,30 +53,11 @@ done
 
 echo "Creating new configuration..."
 
-cat <<EOF > $CONFIG_FILE
-[Groups/0]
-# Group Name
-Name=Default
-# Layout
-Default Layout=us
-# Default Input Method
-DefaultIM=mozc
-
-[Groups/0/Items/0]
-# Name
-Name=keyboard-us
-# Layout
-Layout=
-
-[Groups/0/Items/1]
-# Name
-Name=mozc
-# Layout
-Layout=
-
-[GroupOrder]
-0=Default
-EOF
+src="$(dirname "${BASH_SOURCE[0]}")/../dotfiles/fcitx5-profile"
+[ -f "$src" ] && cp -f $src $CONFIG_FILE || {
+    echo "file not found: $src"
+    exit 1
+}
 
 echo "Restart Fcitx5..."
 fcitx5 -r &

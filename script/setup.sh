@@ -20,16 +20,3 @@ set -e
 [ -f setup_tmux.sh ]      && setup_tmux.sh
 [ -f update_grub.sh ]     && update_grub.sh
 
-# Oh My Bash インストール
-#bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-
-# .bashrc is created by OhMyBash, add some Alias.
-if ! grep '# Alias' $HOME/.bashrc; then
-    echo "" >> $HOME/.bashrc
-    echo "# Alias" >> $HOME/.bashrc
-    echo "alias py=python3" >> $HOME/.bashrc
-    echo "alias python=python3" >> $HOME/.bashrc
-    mkdir -p $HOME/.local/bin
-    echo 'export PATH="$PATH:$HOME/.local/bin"' >> $HOME/.bashrc
-fi
-
