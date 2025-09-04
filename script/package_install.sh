@@ -5,8 +5,11 @@
 # lib/logger.sh
 # logs/script.log
 
-# Package list file
-PKG_FILE="$(dirname "$0")/package_list.txt"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
+LOGGER="$PROJECT_ROOT/lib/logger.sh"
+[ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
+
+PKG_FILE="$PROJECT_ROOT/script/package_list.txt"
 
 # Check dependencies
 check_dependencies() {
@@ -40,7 +43,6 @@ parse_package_list() {
 }
 
 main() {
-    source ../lib/logger.sh $0
     check_dependencies
     
     log info "Updating package lists..."

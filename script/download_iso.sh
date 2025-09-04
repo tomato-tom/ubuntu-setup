@@ -7,9 +7,9 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOGGER="$SCRIPT_DIR/../lib/logger.sh"
-[ -f "$LOGGER" ] && source "$LOGGER" || exit 1
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
+LOGGER="$PROJECT_ROOT/lib/logger.sh"
+[ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
 
 # Configuration
 MIRROR_URL="https://jp.mirror.coganng.com/ubuntu-cdimage/jammy"

@@ -1,10 +1,14 @@
 #!/bin/bash
 
-# Check current UEFI boot entry
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
+LOGGER="$PROJECT_ROOT/lib/logger.sh"
+[ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
+
+log info "Check current UEFI boot entry"
 efibootmgr
 echo
 
-# Crate backup
+log info "Crate backup"
 sudo cp /etc/default/grub /etc/default/grub.bak
 
 # Next time the same OS startup as now
@@ -18,5 +22,5 @@ sudo sed -i 's/^GRUB_TIMEOUT_STYLE=.*/GRUB_TIMEOUT_STYLE=menu/' /etc/default/gru
 # Apply settings
 sudo update-grub
 
-echo "Updated GRUB settings. Please reboot now."
+log info "Updated GRUB settings. Please reboot now."
 

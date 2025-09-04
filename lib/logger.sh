@@ -14,8 +14,8 @@
 
 # Log file configuration
 SOURCE_SCRIPT=$0
-LIB_DIR="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)"
-LOG_DIR="$LIB_DIR/../logs"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
+LOG_DIR="$PROJECT_ROOT/logs"
 LOG_FILE="$LOG_DIR/script.log"
 LOG_MAX_SIZE=$((1024*1024))  # 1MB (in bytes)
 LOG_MAX_FILES=3              # Maximum number of log files to keep

@@ -11,8 +11,11 @@
 #
 # ----------------------------------------------------------------------------
 
-#set -x # debug
-set -e
+set -euo pipefail
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
+LOGGER="$PROJECT_ROOT/lib/logger.sh"
+[ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
 
 # Directory where Obsidian's AppImage is installed
 INSTALL_DIR="$HOME/.local/share/obsidian"
@@ -35,27 +38,26 @@ DOWNLOAD_URL=$(curl -s "$JSON_URL" | jq -r '.downloadUrl')
 
 # Check if the local version is the same as the latest version
 if [ "$LOCAL_VERSION" == "" ]; then
-    echo "Installing for the first time"
+    log info "Installing for the first time"
     sudo apt update
     sudo apt install libfuse2t64 -y
 elif [ "$LOCAL_VERSION" == "$LATEST_VERSION" ]; then
-    echo "The latest version ($LATEST_VERSION) is already installed."
+    log info "The latest version ($LATEST_VERSION) is already installed."
     exit 0
 else
-    echo "Deleting old AppImage..."
+    log info "Deleting old AppImage..."
     rm -f "$INSTALL_DIR/$(basename "$LOCAL_APPIMAGE")"
 fi
 
 # Convert the download URL to the latest AppImage URL
-APPIMAGE_URL=$(echo "$DOWNLOAD_URL" | sed -E 's/obsidian-([0-9]+\.[0-9]+\.[0-9]+)\.asar\.gz/Obsidian-\1.AppImage/')
+APPIMAGE_URL=$(log info "$DOWNLOAD_URL" | sed -E 's/obsidian-([0-9]+\.[0-9]+\.[0-9]+)\.asar\.gz/Obsidian-\1.AppImage/')
 
 # Filename for the latest AppImage
 APPIMAGE=$(basename "$APPIMAGE_URL")
 
-#exit 1 # debug
 
 # Download the latest AppImage
-echo "Downloading the latest version of Obsidian..."
+log info "Downloading the latest version of Obsidian..."
 wget -q --show-progress "$APPIMAGE_URL" -O "$INSTALL_DIR/$APPIMAGE"
 
 # If download was successful
@@ -66,10 +68,10 @@ if [ $? -eq 0 ]; then
     # Create a symbolic link
     ln -sf "$INSTALL_DIR/$APPIMAGE" "$HOME/.local/bin/obsidian"
     
-    echo "Obsidian has been updated successfully!"
-    echo "To run: obsidian --no-sandbox"
+    log info "Obsidian has been updated successfully!"
+    log info "To run: obsidian --no-sandbox"
 else
-    echo "Download failed."
+    log error "Download failed."
     exit 1
 fi
 

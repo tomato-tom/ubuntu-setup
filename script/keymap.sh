@@ -13,22 +13,26 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
+LOGGER="$PROJECT_ROOT/lib/logger.sh"
+[ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
+
 # Archlinux required usbutils package for lsusb
 #pacman -Syu
 #pacman -S --noconfirm usbutils
 
 # Display connected keyboard devices
-echo "Connected keyboard devices:"
 keyboard_devices=$(lsusb | grep "Keyboard")
+log info "Connected keyboard devices: $keyboard_devices"
 
 # Check the number of keyboard devices found
 num_devices=$(echo "$keyboard_devices" | wc -l)
 
 if [ "$num_devices" -eq 0 ]; then
-    echo "No keyboard devices found."
+    log error "No keyboard devices found."
     exit 1
 elif [ "$num_devices" -gt 1 ]; then
-    echo "Multiple keyboard devices found."
+    log error "Multiple keyboard devices found."
     echo "$keyboard_devices"
     exit 1
 fi
@@ -40,15 +44,15 @@ product_id=$(echo "$keyboard_devices" | awk '{print $6}' | cut -d':' -f2 | tr '[
 # Extract device name
 device_name=$(echo "$keyboard_devices" | awk '{for (i=7; i<=NF; i++) printf $i " "; print ""}')
 
-echo "vendorID: $vendor_id"
-echo "productID: $product_id"
-echo "Device name: $device_name"
+log info "vendorID: $vendor_id"
+log info "productID: $product_id"
+log info "Device name: $device_name"
 
 # Find an available hwdb file number
 for i in {90..99}; do
     hwdb_file="/etc/udev/hwdb.d/${i}-custom-keyboard.hwdb"
     if [ ! -f "$hwdb_file" ]; then
-        echo "Creating configuration file: $hwdb_file"
+        log info "Creating configuration file: $hwdb_file"
         cat << EOF > "$hwdb_file"
 evdev:input:b*v${vendor_id}p${product_id}*
   KEYBOARD_KEY_70039=leftctrl
@@ -61,7 +65,7 @@ done
 systemd-hwdb update
 udevadm trigger
 
-echo "Applying configuration..."
+log info "Applying configuration..."
 
 # Wait and check for the configuration to take effect
 max_wait_time=10
@@ -71,7 +75,7 @@ while [ $wait_time -lt $max_wait_time ]; do
     result=$(udevadm info /dev/input/by-path/*-usb-*-kbd | grep KEYBOARD_KEY)
 
     if [ ! -z "$result" ]; then
-        echo "Configuration applied: $result"
+        log info "Configuration applied: $result"
         break
     fi
 
@@ -82,6 +86,6 @@ done
 
 # If the configuration was not applied within 10 seconds, show a timeout message
 if [ $wait_time -ge $max_wait_time ]; then
-    echo "Error: Configuration not applied within $max_wait_time seconds."
+    log error "Configuration not applied within $max_wait_time seconds."
 fi
 
