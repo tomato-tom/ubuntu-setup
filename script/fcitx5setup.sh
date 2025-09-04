@@ -4,7 +4,8 @@
 # Installing the necessary packages, configuring auto-start,
 # handling GNOME-specific environment variables, and creating a configuration file for Fcitx5.
 
-LOGGER="$(dirname "${BASH_SOURCE[0]}")/../lib/logger.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOGGER="$SCRIPT_DIR/../lib/logger.sh"
 [ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
 
 # Install fcitx5 and necessary packages

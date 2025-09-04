@@ -6,7 +6,8 @@
 
 set -euo pipefail
 
-LOGGER="$(dirname "${BASH_SOURCE[0]}")/../lib/logger.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOGGER="$SCRIPT_DIR/../lib/logger.sh"
 [ -f "$LOGGER" ] && source "$LOGGER $0" || exit 1
 
 # Neovim のインストール

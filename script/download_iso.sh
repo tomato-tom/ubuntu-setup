@@ -7,8 +7,9 @@
 
 set -euo pipefail
 
-LOGGER="$(dirname "${BASH_SOURCE[0]}")/../lib/logger.sh"
-[ -f "$LOGGER" ] && source "$LOGGER $0" || exit 1
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOGGER="$SCRIPT_DIR/../lib/logger.sh"
+[ -f "$LOGGER" ] && source "$LOGGER" || exit 1
 
 # Configuration
 MIRROR_URL="https://jp.mirror.coganng.com/ubuntu-cdimage/jammy"

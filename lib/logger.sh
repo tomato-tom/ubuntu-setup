@@ -13,11 +13,17 @@
 #   logs/script.log
 
 # Log file configuration
-SOURCE_SCRIPT=$1
-LOG_DIR="$(dirname "${BASH_SOURCE[0]}")/../logs"
+SOURCE_SCRIPT=$0
+LIB_DIR="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)"
+LOG_DIR="$LIB_DIR/../logs"
 LOG_FILE="$LOG_DIR/script.log"
 LOG_MAX_SIZE=$((1024*1024))  # 1MB (in bytes)
 LOG_MAX_FILES=3              # Maximum number of log files to keep
+
+echo "BASH_SOURCE[0]: ${BASH_SOURCE[0]}"
+echo "LIB_DIR: $LIB_DIR"
+echo "LOG_DIR: $LOG_DIR"
+echo "LOG_FILE: $LOG_FILE"
 
 mkdir -p "$LOG_DIR"
 
