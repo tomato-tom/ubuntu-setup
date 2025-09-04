@@ -5,7 +5,7 @@
 # handling GNOME-specific environment variables, and creating a configuration file for Fcitx5.
 
 LOGGER="$(dirname "${BASH_SOURCE[0]}")/../lib/logger.sh"
-[ -f "$LOGGER" ] && source $LOGGER || exit 1
+[ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
 
 # Install fcitx5 and necessary packages
 if command -v fcitx5 >/dev/null; then
