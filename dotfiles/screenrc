@@ -1,0 +1,19 @@
+# ~/.screenrc
+# スクロールバッファの行数
+defscrollback 10000
+
+# 起動時のメッセージを非表示
+startup_message off
+
+# 256色サポート
+term screen-256color
+
+# カラーテーマ
+attrcolor b ".I"
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+defbce on
+
+# ステータスバーの設定
+hardstatus alwayslastline
+hardstatus string '%{= kg}[%S%][%w%] %= %{B}%Y-%m-%d %c %{g}[%H]'
+
