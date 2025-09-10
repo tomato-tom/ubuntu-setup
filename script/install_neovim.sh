@@ -66,7 +66,7 @@ log info "Current 'vi' points to: $(readlink -f "$(command -v vi)")"
 log info "Current 'vi' version: $(vi --version | head -n 1)"
 
 # Neovim configuration
-CONFIG_SOURCE="$(dirname "${BASH_SOURCE[0]}")/../dotfiles/init.lua"
+CONFIG_SOURCE="$PROJECT_ROOT/dotfiles/init.lua"
 CONFIG_PATH="$HOME/.config/nvim"
 
 mkdir -p "$CONFIG_PATH"
@@ -78,16 +78,6 @@ if [ -f "$CONFIG_SOURCE" ]; then
     log info "Neovim configuration copied to $CONFIG_PATH/init.lua"
 else
     log warn "Configuration file not found at $CONFIG_SOURCE"
-    
-    # 最小限の設定ファイルを作成
-    cat > "$CONFIG_PATH/init.lua" << 'EOF'
--- Minimal Neovim configuration
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-EOF
-    
-    log info "Created minimal configuration at $CONFIG_PATH/init.lua"
 fi
 
 log info "Neovim setup completed successfully!"

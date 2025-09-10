@@ -58,7 +58,7 @@ done
 
 log info "Creating new configuration..."
 
-src="$(dirname "${BASH_SOURCE[0]}")/../dotfiles/fcitx5-profile"
+src="$(dirname "$PROJECT_ROOT/dotfiles/fcitx5-profile"
 [ -f "$src" ] && cp -f $src $CONFIG_FILE || {
     log error "file not found: $src"
     exit 1
