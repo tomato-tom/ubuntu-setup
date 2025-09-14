@@ -1,5 +1,4 @@
 -- ~/.config/nvim/init.lua
-
 ----------------------------
 -- 基本設定
 ----------------------------
@@ -30,7 +29,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end
 })
 
--- 検索関連
+-- 検索関連 ---
 vim.o.ignorecase = true       -- 小文字と大文字を区別しない
 vim.o.smartcase = true        -- 大文字が含まれる場合、区別する
 vim.o.incsearch = true        -- インクリメンタルサーチ

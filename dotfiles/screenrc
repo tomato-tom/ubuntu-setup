@@ -1,4 +1,5 @@
 # ~/.screenrc
+
 # スクロールバッファの行数
 defscrollback 10000
 

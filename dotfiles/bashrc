@@ -1,5 +1,6 @@
 # ~/.bashrc
 
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
@@ -11,7 +12,7 @@ shopt -s histappend  # 複数セッションでヒストリーを共有
 
 # Colors
 declare -A COLORS=(
-    # 基本色（既存との互換性）
+    # 基本色
     ["RED"]="\033[0;31m"
     ["GREEN"]="\033[0;32m"
     ["YELLOW"]="\033[0;33m"
@@ -118,18 +119,59 @@ alias py=python3
 alias python=python3
 alias clip="wl-copy"
 alias paste="wl-paste"
+alias lsb="lsblk -e 7 -o NAME,TYPE,FSTYPE,SIZE,FSUSE%,MOUNTPOINT,PARTLABEL"
 
 # key bind
 bind "set completion-ignore-case on"    # Tab キーで大文字小文字を無視して補完
 bind 'TAB:menu-complete'                # 即座にコマンド補完
 bind '"\e[Z": menu-complete-backward'   # Shift + Tab で逆順補完
-bind 'set show-all-if-ambiguous on'     # 曖昧な補完時に候補を即表示
+bind 'set show-all-if-ambiguous on'  # 曖昧な補完時に候補を即表示
 
 # 環境変数
 [ -d "$HOME/.local/bin" ] || mkdir "$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
-## fcitx5
+
+# fcitx5
 export XMODIFIERS=@im=fcitx
 export QT_IM_MODULE=fcitx
 export GTK_IM_MODULE=fcitx
+# tmux ------------------------
+alias tl="tmux ls"
 
+# 新規セッション（既存のものはアタッチ）
+tn() {
+    if [ -n "$1" ]; then
+        tmux has-session -t "$1" 2>/dev/null && tmux attach -t "$1" || tmux new -s "$1"
+    else
+        tmux new
+    fi
+}
+
+# アタッチ
+ta() {
+    if [ -n "$1" ]; then
+        tmux attach -t "$1"
+    else
+        tmux attach
+    fi
+}
+
+# セッション削除
+tk() {
+    if [ -n "$1" ]; then
+        tmux kill-session -t "$1"
+    else
+        tmux list-sessions | awk 'BEGIN{FS=":"}{print $1}' | xargs -I {} tmux kill-session -t {}
+    fi
+}
+
+# tmuxエイリアスヘルプ
+th() {
+  echo "
+tmux Alias Helper:
+  tl           リスト
+  tn [name]    新しいセッションを作成、既存ならあタッチ
+  ta [name]    セッションにアタッチ
+  tk <name>    セッションを削除、引数なしですべてのセッションを終了
+  "
+}
