@@ -10,7 +10,7 @@ LOGGER="$PROJECT_ROOT/lib/logger.sh"
 file_pairs=(
     "$PROJECT_ROOT/dotfiles/bashrc:$HOME/.bashrc"
     "$PROJECT_ROOT/dotfiles/fcitx5-profile:$HOME/.config/fcitx5/profile"
-    "$PROJECT_ROOT/dotfiles/fcitx5.service:$HOME/systemd/user/fcitx5.service"
+    "$PROJECT_ROOT/dotfiles/fcitx5.service:$HOME/.config/systemd/user/fcitx5.service"
     "$PROJECT_ROOT/dotfiles/init.lua:$HOME/.config/nvim/init.lua"
     "$PROJECT_ROOT/dotfiles/screenrc:$HOME/.screenrc"
     "$PROJECT_ROOT/dotfiles/tmux.conf:$HOME/.tmux.conf"
@@ -26,18 +26,21 @@ sync() {
     if output="$(rsync -aui "$source" "$target" 2>&1)"; then
         [ -n "$output" ] && {
             update_file="$(echo $output | awk '{print $2}')"
+            echo "exit code: $?"
             log info "update: $update_file"
+            echo "exit code: $?"
         }
     fi
 
     if output="$(rsync -aui "$target" "$source" 2>&1)"; then
         [ -n "$output" ] && {
-            update_file="$(echo $output | awk '{print $2}')"
+            update_file="$(echo "$output" | awk '{print $2}')"
             log info "update: $update_file"
         }
     fi
-}
 
+    return 0
+}
 
 for pair in "${file_pairs[@]}"; do
     IFS=':' read -r source target <<< "$pair"
