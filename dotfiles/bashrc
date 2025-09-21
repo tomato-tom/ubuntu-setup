@@ -131,10 +131,6 @@ bind 'set show-all-if-ambiguous on'  # 曖昧な補完時に候補を即表示
 [ -d "$HOME/.local/bin" ] || mkdir "$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
 
-# fcitx5
-export XMODIFIERS=@im=fcitx
-export QT_IM_MODULE=fcitx
-export GTK_IM_MODULE=fcitx
 # tmux ------------------------
 alias tl="tmux ls"
 

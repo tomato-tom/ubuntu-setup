@@ -10,6 +10,7 @@ LOGGER="$PROJECT_ROOT/lib/logger.sh"
 file_pairs=(
     "$PROJECT_ROOT/dotfiles/bashrc:$HOME/.bashrc"
     "$PROJECT_ROOT/dotfiles/fcitx5-profile:$HOME/.config/fcitx5/profile"
+    "$PROJECT_ROOT/dotfiles/fcitx5.service:$HOME/systemd/user/fcitx5.service"
     "$PROJECT_ROOT/dotfiles/init.lua:$HOME/.config/nvim/init.lua"
     "$PROJECT_ROOT/dotfiles/screenrc:$HOME/.screenrc"
     "$PROJECT_ROOT/dotfiles/tmux.conf:$HOME/.tmux.conf"
