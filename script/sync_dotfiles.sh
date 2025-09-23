@@ -26,9 +26,7 @@ sync() {
     if output="$(rsync -aui "$source" "$target" 2>&1)"; then
         [ -n "$output" ] && {
             update_file="$(echo $output | awk '{print $2}')"
-            echo "exit code: $?"
             log info "update: $update_file"
-            echo "exit code: $?"
         }
     fi
 

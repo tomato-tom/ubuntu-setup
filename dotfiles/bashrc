@@ -137,7 +137,7 @@ alias tl="tmux ls"
 # 新規セッション（既存のものはアタッチ）
 tn() {
     if [ -n "$1" ]; then
-        tmux has-session -t "$1" 2>/dev/null && tmux attach -t "$1" || tmux new -s "$1"
+        tmux has-session -t "$1" 2>/dev/null && tmux attach -t "$@" || tmux new -s "$@"
     else
         tmux new
     fi
@@ -146,7 +146,7 @@ tn() {
 # アタッチ
 ta() {
     if [ -n "$1" ]; then
-        tmux attach -t "$1"
+        tmux attach -t "$@"
     else
         tmux attach
     fi
@@ -155,8 +155,10 @@ ta() {
 # セッション削除
 tk() {
     if [ -n "$1" ]; then
+        # 指定セッションの停止
         tmux kill-session -t "$1"
     else
+        # 全セッション停止
         tmux list-sessions | awk 'BEGIN{FS=":"}{print $1}' | xargs -I {} tmux kill-session -t {}
     fi
 }
@@ -166,8 +168,8 @@ th() {
   echo "
 tmux Alias Helper:
   tl           リスト
-  tn [name]    新しいセッションを作成、既存ならあタッチ
-  ta [name]    セッションにアタッチ
-  tk <name>    セッションを削除、引数なしですべてのセッションを終了
+  tn [name] [arg...]   新しいセッションを作成、既存ならあタッチ
+  ta [name] [arg...]   セッションにアタッチ
+  tk <name>            セッションを削除、引数なしですべてのセッションを終了
   "
 }
