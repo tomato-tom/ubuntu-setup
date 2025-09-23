@@ -66,4 +66,3 @@ log() {
     echo -e "${color}[${level^^}] ${message}${COLOR_RESET}"
     echo "[${timestamp}] [${level^^}] [${SOURCE_SCRIPT}] ${message}" >> "$LOG_FILE"
 }
-
