@@ -1,7 +1,7 @@
 #!/bin/bash
-
+# script/package_install.sh
+# 
 # Directory structure:
-# script/package_install.sh      # This script
 # lib/logger.sh
 # logs/script.log
 
