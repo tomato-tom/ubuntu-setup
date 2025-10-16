@@ -37,8 +37,8 @@ vim.o.hlsearch = true         -- 検索結果のハイライト
 -- 一時的にハイライトを無効化`:nohls`
 
 -- 行末の空白を表示
-vim.o.list = true
-vim.o.listchars = "space:·,tab:→→"
+--vim.o.list = true
+--vim.o.listchars = "space:·,tab:→→"
 
 -- ステータスラインの表示
 vim.o.showmode = false        -- モード表示を無効化（lualine等のプラグインに任せる）
@@ -149,7 +149,7 @@ function numpad_mode()
   end
 end
 
--- ノーマルモードで Alt + N を押したときにテンキーモードを切り替える
+-- insertモードで Alt + N を押したときにテンキーモードを切り替える
 vim.api.nvim_set_keymap('i', '<A-n>', '<ESC>:lua numpad_mode()<CR>a', { noremap = true, silent = false })
 
 
