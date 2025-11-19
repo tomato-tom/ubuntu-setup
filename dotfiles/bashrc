@@ -1,8 +1,12 @@
 # ~/.bashrc
 
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
+
+# ○○○●○○○●○○
+#
+# 基本設定
+# ○○○●○○○●○○
 
 # ヒストリー設定
 HISTSIZE=10000
@@ -10,25 +14,21 @@ HISTFILESIZE=20000
 HISTCONTROL=ignoreboth:erasedups
 shopt -s histappend  # 複数セッションでヒストリーを共有
 
-# Colors
-declare -A COLORS=(
-    # 基本色
-    ["RED"]="\033[0;31m"
-    ["GREEN"]="\033[0;32m"
-    ["YELLOW"]="\033[0;33m"
-    ["BLUE"]="\033[0;34m"
-    ["RESET"]="\033[0m"
-    
-    # 256色の鮮やかな色
-    ["CYAN"]="\033[38;5;51m"        # 明るいシアン
-    ["ORANGE"]="\033[38;5;208m"     # オレンジ
-    ["PURPLE"]="\033[38;5;135m"     # 紫
-    ["LIME"]="\033[38;5;118m"       # ライムグリーン
-    ["PINK"]="\033[38;5;205m"       # ピンク
-    ["GOLD"]="\033[38;5;220m"       # ゴールド
-    ["AQUA"]="\033[38;5;87m"        # アクア
-)
+# key bind
+bind "set completion-ignore-case on"    # Tab キーで大文字小文字を無視して補完
+bind 'TAB:menu-complete'                # 即座にコマンド補完
+bind '"\e[Z": menu-complete-backward'   # Shift + Tab で逆順補完
+bind 'set show-all-if-ambiguous on'  # 曖昧な補完時に候補を即表示
 
+# 環境変数
+[ -d "$HOME/.local/bin" ] || mkdir "$HOME/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
+
+# ○○○●○○○●○○
+#
+# プロンプト
+# ○○○●○○○●○○
+#
 # Gitプロンプト設定
 GIT_PS1_SHOWDIRTYSTATE=true
 GIT_PS1_SHOWSTASHSTATE=true
@@ -106,7 +106,10 @@ switch_prompt() {
 
 alias swp="switch_prompt"
 
+# ○○○●○○○●○○
+#
 # Alias
+# ○○○●○○○●○○
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias ll='ls -thl'
@@ -121,53 +124,71 @@ alias clip="wl-copy"
 alias paste="wl-paste"
 alias lsb="lsblk -e 7 -o NAME,TYPE,FSTYPE,SIZE,FSUSE%,MOUNTPOINT,PARTLABEL"
 
-# key bind
-bind "set completion-ignore-case on"    # Tab キーで大文字小文字を無視して補完
-bind 'TAB:menu-complete'                # 即座にコマンド補完
-bind '"\e[Z": menu-complete-backward'   # Shift + Tab で逆順補完
-bind 'set show-all-if-ambiguous on'  # 曖昧な補完時に候補を即表示
+# Colors
+# 例： echo -e ${COLORS[RED]}hello
+declare -A COLORS=(
+    # 基本色
+    ["RED"]="\033[0;31m"
+    ["GREEN"]="\033[0;32m"
+    ["YELLOW"]="\033[0;33m"
+    ["BLUE"]="\033[0;34m"
+    ["RESET"]="\033[0m"
+    
+    # 256色の鮮やかな色
+    ["CYAN"]="\033[38;5;51m"        # 明るいシアン
+    ["ORANGE"]="\033[38;5;208m"     # オレンジ
+    ["PURPLE"]="\033[38;5;135m"     # 紫
+    ["LIME"]="\033[38;5;118m"       # ライムグリーン
+    ["PINK"]="\033[38;5;205m"       # ピンク
+    ["GOLD"]="\033[38;5;220m"       # ゴールド
+    ["AQUA"]="\033[38;5;87m"        # アクア
+)
 
-# 環境変数
-[ -d "$HOME/.local/bin" ] || mkdir "$HOME/.local/bin"
-export PATH="$HOME/.local/bin:$PATH"
-
-# tmux ------------------------
-alias tl="tmux ls"
-
-# 新規セッション（既存のものはアタッチ）
-tn() {
-    if [ -n "$1" ]; then
-        tmux has-session -t "$1" 2>/dev/null && tmux attach -t "$1" || tmux new -s "$1"
-    else
-        tmux new
-    fi
-}
-
-# アタッチ
-ta() {
-    if [ -n "$1" ]; then
-        tmux attach -t "$1"
-    else
-        tmux attach
-    fi
-}
-
-# セッション削除
-tk() {
-    if [ -n "$1" ]; then
-        tmux kill-session -t "$1"
-    else
-        tmux list-sessions | awk 'BEGIN{FS=":"}{print $1}' | xargs -I {} tmux kill-session -t {}
-    fi
-}
+# ○○○●○
+#
+# tmux
+# ○○○●○
 
 # tmuxエイリアスヘルプ
 th() {
   echo "
 tmux Alias Helper:
-  tl           リスト
-  tn [name]    新しいセッションを作成、既存ならあタッチ
-  ta [name]    セッションにアタッチ
-  tk <name>    セッションを削除、引数なしですべてのセッションを終了
+  tl                   リスト
+  tn [name] [arg...]   新しいセッションを作成、既存ならあタッチ
+  ta [name] [arg...]   セッションにアタッチ
+  tk [name]            セッションを削除、引数なしですべてのセッションを終了
+  th           このヘルプ
   "
 }
+
+alias tl="tmux ls"
+
+# 新規セッション（既存のものはアタッチ）
+tn() {
+    if [ -n "$1" ]; then
+        tmux has-session -t "$1" 2>/dev/null && tmux attach -t "$@" || tmux new -s "$@"
+    else
+        tmux new
+    fi || th
+}
+
+# アタッチ
+ta() {
+    if [ -n "$1" ]; then
+        tmux attach -t "$@"
+    else
+        tmux attach
+    fi || th
+}
+
+# セッション削除
+tk() {
+    if [ -n "$1" ]; then
+        # 指定セッションの停止
+        tmux kill-session -t "$1"
+    else
+        # 全セッション停止
+        tmux list-sessions | awk 'BEGIN{FS=":"}{print $1}' | xargs -I {} tmux kill-session -t {}
+    fi || th
+}
+
