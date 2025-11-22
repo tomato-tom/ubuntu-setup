@@ -40,6 +40,8 @@ sync() {
     return 0
 }
 
+mkdir -p "$HOME/.config/nvim"
+
 for pair in "${file_pairs[@]}"; do
     IFS=':' read -r source target <<< "$pair"
     sync "$source" "$target"
