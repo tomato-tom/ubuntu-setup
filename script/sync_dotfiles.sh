@@ -26,9 +26,7 @@ sync() {
     if output="$(rsync -aui "$source" "$target" 2>&1)"; then
         [ -n "$output" ] && {
             update_file="$(echo $output | awk '{print $2}')"
-            echo "exit code: $?"
             log info "update: $update_file"
-            echo "exit code: $?"
         }
     fi
 
@@ -41,6 +39,8 @@ sync() {
 
     return 0
 }
+
+mkdir -p "$HOME/.config/nvim"
 
 for pair in "${file_pairs[@]}"; do
     IFS=':' read -r source target <<< "$pair"
