@@ -34,19 +34,13 @@ vim.o.ignorecase = true       -- 小文字と大文字を区別しない
 vim.o.smartcase = true        -- 大文字が含まれる場合、区別する
 vim.o.incsearch = true        -- インクリメンタルサーチ
 vim.o.hlsearch = true         -- 検索結果のハイライト
--- 一時的にハイライトを無効化`:nohls`
 
--- 行末の空白を表示
---vim.o.list = true
---vim.o.listchars = "space:·,tab:→→"
-
--- ステータスラインの表示
-vim.o.showmode = false        -- モード表示を無効化（lualine等のプラグインに任せる）
-vim.o.laststatus = 3          -- 常にステータスラインを表示
+-- 常にステータスラインを表示表示
+vim.o.showmode = true
+vim.o.laststatus = 3
 
 -- カーソルライン表示
 vim.o.cursorline = true
---vim.o.cursorcolumn = true
 
 -- 挿入モード中はカーソルラインを非表示
 vim.api.nvim_create_autocmd('InsertEnter', {
@@ -105,10 +99,6 @@ vim.api.nvim_set_keymap('v', '<A-r>', ':!bash<CR>', { noremap = true, silent = f
 -- 全選択
 vim.api.nvim_set_keymap('n', '<A-a>', 'ggVG', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<A-a>', '<Esc>ggVG', { noremap = true, silent = true })
-
--- 上下に空白行を挿入（カーソル位置はそのまま）
-vim.api.nvim_set_keymap('n', '<A-o>', 'o<Esc>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<A-O>', 'O<Esc>', { noremap = true, silent = true })
 
 -- 保存と終了
 vim.api.nvim_set_keymap('n', '<A-w>', ':w<CR>', { noremap = true, silent = false })
@@ -169,3 +159,56 @@ vim.api.nvim_create_autocmd("InsertLeave", {
   end
 })
 
+-- GrepMd <foo>
+vim.api.nvim_create_user_command('GrepMd', function(opts)
+  local pattern = opts.args
+  if pattern == '' then
+    vim.notify('Usage: GrepMd <pattern>', vim.log.levels.WARN)
+    return
+  end
+
+  -- コマンド構築
+  local cmd
+  if vim.fn.executable('rg') == 1 then
+    cmd = string.format('rg -l -i --type md -- %s', vim.fn.shellescape(pattern))
+  else
+    cmd = string.format('grep -ril --include="*.md" -- %s .', vim.fn.shellescape(pattern))
+  end
+
+  -- 新規一時バッファを作成（名前なし）
+  local bufnr = vim.api.nvim_create_buf(false, true)  -- false: not listed, true: scratch
+  if bufnr == 0 then
+    vim.notify('Failed to create buffer', vim.log.levels.ERROR)
+    return
+  end
+
+  -- バッファオプション設定
+  vim.api.nvim_buf_set_option(bufnr, 'buftype', 'nofile')
+  vim.api.nvim_buf_set_option(bufnr, 'bufhidden', 'hide')
+  vim.api.nvim_buf_set_option(bufnr, 'swapfile', false)
+  vim.api.nvim_buf_set_option(bufnr, 'filetype', 'text')
+
+  -- コマンド実行
+  local output = vim.fn.system(cmd)
+  if vim.v.shell_error ~= 0 then
+    vim.notify('Grep failed: ' .. output, vim.log.levels.ERROR)
+    return
+  end
+
+  -- 結果をバッファに挿入
+  local lines = {}
+  if output == '' then
+    lines = { 'No matches found.' }
+  else
+    lines = vim.split(output, '\n', { trimempty = true })
+    -- ./ を除去（gf 用）
+    lines = vim.tbl_map(function(line)
+      return line:gsub('^%.%/', '')
+    end, lines)
+  end
+
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+
+  -- バッファを開く（新しいウィンドウ or 現在のウィンドウに表示）
+  vim.api.nvim_set_current_buf(bufnr)
+end, { nargs = 1 })
