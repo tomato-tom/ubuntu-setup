@@ -1,8 +1,7 @@
 #!/bin/bash
 # script/install_neovim.sh
-# 1. Installing Neovim
-# 2. Setting up 'vi' to use Neovim via update-alternatives
-# 3. Configuration
+# Installing and setup Neovim
+# Ubuntu
 
 set -euo pipefail
 
