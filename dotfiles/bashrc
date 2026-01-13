@@ -109,14 +109,10 @@ alias grep='grep --color=auto'
 alias ll='ls -thl'
 alias la='ls -thal'
 alias l='ls'
-alias df='df -h'
-alias du='du -sh'
-alias free='free -h'
 alias py=python3
 alias python=python3
 alias clip="wl-copy"
-#alias paste="wl-paste" # 標準コマンドと被り
-alias lsb="lsblk -e 7 -o NAME,TYPE,FSTYPE,SIZE,FSUSE%,MOUNTPOINT,PARTLABEL"
+alias lsb="lsblk -e 7 -o NAME,TYPE,FSTYPE,SIZE,FSUSE%,MOUNTPOINT,LABEL,PARTLABEL"
 
 # Colors
 # 例： echo -e ${COLORS[RED]}hello
