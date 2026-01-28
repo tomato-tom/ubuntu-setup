@@ -6,7 +6,7 @@ SCRIPT_DIR := script
 # メインターゲット
 .PHONY: all clean help
 
-all: packages keymap fcitx5 neovim obsidian tmux grub
+all: packages keymap fcitx5 neovim obsidian tmux grub dotfiles
 	@echo "Ubuntu setup completed!"
 
 # 個別セットアップターゲット
