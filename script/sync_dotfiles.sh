@@ -21,8 +21,9 @@ sync() {
     local target=$2
     local updatefile
 
-    log info "sync: $source ↔ $target"
+    log info "check: $source <-> $target"
 
+    # source -> target
     if output="$(rsync -aui "$source" "$target" 2>&1)"; then
         [ -n "$output" ] && {
             update_file="$(echo $output | awk '{print $2}')"
@@ -30,6 +31,7 @@ sync() {
         }
     fi
 
+    # target -> source
     if output="$(rsync -aui "$target" "$source" 2>&1)"; then
         [ -n "$output" ] && {
             update_file="$(echo "$output" | awk '{print $2}')"
