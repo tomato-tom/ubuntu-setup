@@ -199,11 +199,14 @@ ts() {
 
         if [[ "$group" = git ]]; then
             if ! tmux list-windows -t git | grep -q "$line"; then
-                tmux new-window -dc "$HOME/git/$line" -n "$line" -t git
+                tmux new-window -dc "$HOME/git/$line" -n "$line" -t git &&
+                echo "New window: $line"
             fi
         elif [[ "$group" = server ]]; then
             if ! tmux list-windows -t server | grep -q "$line"; then
-                ssh "$line" -o ConnectTimeout=2 : && tmux new-window -d -n "$line" -t server
+                ssh "$line" -o ConnectTimeout=2 : &&
+                tmux new-window -d -n "$line" -t server &&
+                echo "New window: $line"
             fi
         fi
     done < "$HOME/.config/tmux_sessions.list"
