@@ -115,6 +115,7 @@ alias clip="wl-copy"
 alias lsb="lsblk -e 7 -o NAME,TYPE,FSTYPE,SIZE,FSUSE%,MOUNTPOINT,LABEL,PARTLABEL"
 
 # Colors
+
 # 例： echo -e ${COLORS[RED]}hello
 declare -A COLORS=(
     # 基本色
@@ -215,5 +216,9 @@ ts() {
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-. "$HOME/.cargo/env"
-source /home/noble/git/alacritty/extra/completions/alacritty.bash
+source "$HOME/.cargo/env"
+
+# Alacritty Bash completions
+if [ -f ~/.bash_completion/alacritty ]; then
+    source ~/.bash_completion/alacritty
+fi
