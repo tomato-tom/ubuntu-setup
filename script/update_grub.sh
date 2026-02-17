@@ -8,7 +8,7 @@ log info "Check current UEFI boot entry"
 efibootmgr
 echo
 
-log info "Crate backup"
+log info "Create backup"
 sudo cp /etc/default/grub /etc/default/grub.bak
 
 # Next time the same OS startup as now
