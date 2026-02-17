@@ -14,7 +14,6 @@ success() { echo -e "\033[1;32m[SUCCESS]\033[0m $1"; }
 install_dependencies() {
     info "Updating package list and installing dependencies..."
     sudo apt update
-    # 公式ドキュメントに基づく Ubuntu 向け依存関係
     # Wayland + Nvidia の場合は libegl1-mesa-dev も必要になる場合があります
     sudo apt install -y \
         cmake \
@@ -28,7 +27,6 @@ install_dependencies() {
         curl \
         gzip \
         scdoc \
-        libdesktop-file-utils \
         libegl1-mesa-dev &&
         success "Dependencies installed."
 }
