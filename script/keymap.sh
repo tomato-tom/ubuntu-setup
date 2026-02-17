@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Map Caps Lock key to Control
 # Tested on:
 # Ubuntu 22.04~24.04
@@ -68,7 +67,7 @@ udevadm trigger
 log info "Applying configuration..."
 
 # Wait and check for the configuration to take effect
-max_wait_time=10
+max_wait_time=3
 wait_time=0
 while [ $wait_time -lt $max_wait_time ]; do
     # Check the keyboard configuration

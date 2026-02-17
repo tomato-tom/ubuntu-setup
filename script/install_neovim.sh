@@ -34,7 +34,7 @@ update_vi() {
     log info "'vi' has been set to use Neovim."
 }
 
-# vi コマンドの設定
+# vi コマンドをnvimに設定
 if command -v vi &>/dev/null; then
     log info "'vi' command is already installed."
     

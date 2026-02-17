@@ -1,8 +1,6 @@
 #!/bin/bash -e
 # script/fcitx5setup.sh
 # The script is essentially setting up Fcitx5 input method for Ubuntu 24.04.
-# Installing the necessary packages, configuring auto-start,
-# handling GNOME-specific environment variables, and creating a configuration file for Fcitx5.
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
 LOGGER="$PROJECT_ROOT/lib/logger.sh"

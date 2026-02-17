@@ -5,14 +5,13 @@ ALACRITTY_DIR="$HOME/.local/src/alacritty"
 INSTALL_PREFIX="/usr/local"
 REPO_URL="https://github.com/alacritty/alacritty.git"
 
-# 色付き出力用関数
-info() { echo -e "\033[1;34m[INFO]\033[0m $1"; }
-warn() { echo -e "\033[1;33m[WARN]\033[0m $1"; }
-success() { echo -e "\033[1;32m[SUCCESS]\033[0m $1"; }
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
+LOGGER="$PROJECT_ROOT/lib/logger.sh"
+[ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
 
 # 依存関係のインストール (Ubuntu/Debian)
 install_dependencies() {
-    info "Updating package list and installing dependencies..."
+    log info "Updating package list and installing dependencies..."
     sudo apt update
     # Wayland + Nvidia の場合は libegl1-mesa-dev も必要になる場合があります
     sudo apt install -y \
@@ -28,19 +27,19 @@ install_dependencies() {
         gzip \
         scdoc \
         libegl1-mesa-dev &&
-        success "Dependencies installed."
+        log info "Dependencies installed."
 }
 
 # Rust コンパイラのインストール (rustup)
 install_rust() {
     if ! command -v cargo &> /dev/null; then
-        info "Rust not found. Installing rustup..."
+        log info "Rust not found. Installing rustup..."
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         # 環境変数の読み込み
         source "$HOME/.cargo/env"
-        success "Rust installed."
+        log info "Rust installed."
     else
-        info "Rust already installed. Updating toolchain..."
+        log info "Rust already installed. Updating toolchain..."
         source "$HOME/.cargo/env"
         rustup update stable
         rustup override set stable
@@ -50,30 +49,30 @@ install_rust() {
 # ソースコードのクローンまたは更新
 get_source() {
     if [ -d "$ALACRITTY_DIR" ]; then
-        info "Updating existing repository..."
+        log info "Updating existing repository..."
         cd "$ALACRITTY_DIR"
         git pull
     else
-        info "Cloning repository..."
+        log info "Cloning repository..."
         mkdir -p "$(dirname "$ALACRITTY_DIR")"
         git clone --depth 1 "$REPO_URL" "$ALACRITTY_DIR"
         cd "$ALACRITTY_DIR"
     fi
-    success "Source code ready."
+    log info "Source code ready."
 }
 
 # ビルド
 build_alacritty() {
-    info "Building Alacritty (this may take a while)..."
+    log info "Building Alacritty (this may take a while)..."
     source "$HOME/.cargo/env"
     cargo build --release
-    success "Build completed."
+    log info "Build completed."
     beep -r 3
 }
 
-# システムへのインストール (Post Build)
+# システムへのインストール
 install_artifacts() {
-    info "Installing binaries and assets..."
+    log info "Installing binaries and assets..."
     
     # バイナリ
     sudo cp target/release/alacritty "$INSTALL_PREFIX/bin/"
@@ -102,12 +101,12 @@ install_artifacts() {
         echo "source ~/.bash_completion/alacritty" >> ~/.bashrc
     fi
 
-    success "Artifacts installed."
+    log info "Artifacts installed."
 }
 
 # 設定ファイルの準備
 setup_config() {
-    info "Preparing configuration directory..."
+    log info "Preparing configuration directory..."
     # Alacritty は設定ファイルを自動作成しないため、ディレクトリのみ作成します
     CONFIG_DIR="$HOME/.config/alacritty"
     mkdir -p "$CONFIG_DIR"
@@ -115,11 +114,11 @@ setup_config() {
     if [ ! -f "$CONFIG_DIR/alacritty.toml" ]; then
         # 空の設定ファイルを作成（デフォルト設定で使用可能）
         touch "$CONFIG_DIR/alacritty.toml"
-        warn "Config file created at $CONFIG_DIR/alacritty.toml (empty defaults)."
+        log warn "Config file created at $CONFIG_DIR/alacritty.toml (empty defaults)."
     else
-        info "Config file already exists."
+        log info "Config file already exists."
     fi
-    success "Configuration setup complete."
+    log info "Configuration setup complete."
 }
 
 # メイン処理
@@ -136,9 +135,9 @@ main() {
     setup_config
     
     echo ""
-    success "Alacritty installation/update complete!"
-    info "You can now launch Alacritty from your application menu or by running 'alacritty'."
-    info "Config file location: $HOME/.config/alacritty/alacritty.toml"
+    log info "Alacritty installation/update complete!"
+    log info "You can now launch Alacritty from your application menu or by running 'alacritty'."
+    log info "Config file location: $HOME/.config/alacritty/alacritty.toml"
 }
 
 main

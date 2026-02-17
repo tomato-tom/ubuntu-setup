@@ -63,7 +63,7 @@ wget -q --show-progress "$APPIMAGE_URL" -O "$INSTALL_DIR/$APPIMAGE"
 # If download was successful
 if [ $? -eq 0 ]; then
     # Make the AppImage executable
-    chmod +x "$INSTALL_DIR/$APPIMAGE"
+    chmod 744 "$INSTALL_DIR/$APPIMAGE"
     
     # Create a symbolic link
     ln -sf "$INSTALL_DIR/$APPIMAGE" "$HOME/.local/bin/obsidian"
