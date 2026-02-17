@@ -109,16 +109,13 @@ alias grep='grep --color=auto'
 alias ll='ls -thl'
 alias la='ls -thal'
 alias l='ls'
-alias df='df -h'
-alias du='du -sh'
-alias free='free -h'
 alias py=python3
 alias python=python3
 alias clip="wl-copy"
-#alias paste="wl-paste" # 標準コマンドと被り
-alias lsb="lsblk -e 7 -o NAME,TYPE,FSTYPE,SIZE,FSUSE%,MOUNTPOINT,PARTLABEL"
+alias lsb="lsblk -e 7 -o NAME,TYPE,FSTYPE,SIZE,FSUSE%,MOUNTPOINT,LABEL,PARTLABEL"
 
 # Colors
+
 # 例： echo -e ${COLORS[RED]}hello
 declare -A COLORS=(
     # 基本色
@@ -187,12 +184,41 @@ tk() {
 
 # tmux sessions
 ts() {
-    tmux new -ds git -c ~/git
-    tmux new-window -dc ~/git/homelab-notes -n notes -t git
-    tmux new-window -dc ~/git/chat-search -n chat-search -t git
-    tmux new-window -dc ~/git/cheatsheet -n cheatcheet -t git
-    ssh ay321s : && tmux new -ds ay321s ssh ay321s
-    ssh r630 : && tmux new -ds r630 ssh r630
-    ssh r120e : && tmux new -ds r120e ssh r120e
+    local group
+    tmux has-session -t git 2>/dev/null || tmux new -ds git -c ~/git
+    tmux has-session -t server 2>/dev/null || tmux new -ds server
+
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^# ]] || [[ -z "$line" ]]; then
+            continue
+        fi
+
+        if [[ "$line" =~ ^\[ ]]; then
+            group="${line//[\[\]]/}"
+            continue
+        fi
+
+        if [[ "$group" = git ]]; then
+            if ! tmux list-windows -t git | grep -q "$line"; then
+                tmux new-window -dc "$HOME/git/$line" -n "$line" -t git &&
+                echo "New window: $line"
+            fi
+        elif [[ "$group" = server ]]; then
+            if ! tmux list-windows -t server | grep -q "$line"; then
+                ssh "$line" -o ConnectTimeout=2 : &&
+                tmux new-window -d -n "$line" -t server &&
+                echo "New window: $line"
+            fi
+        fi
+    done < "$HOME/.config/tmux_sessions.list"
 }
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+source "$HOME/.cargo/env"
+
+# Alacritty Bash completions
+if [ -f ~/.bash_completion/alacritty ]; then
+    source ~/.bash_completion/alacritty
+fi
