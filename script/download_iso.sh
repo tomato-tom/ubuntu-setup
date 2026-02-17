@@ -1,7 +1,6 @@
 #!/bin/bash
-# ISO download and verification script
+# ISO download script
 # - GPG key verification
-# - Local ISO checksum validation (if exists)
 # - Download from mirror
 # - Checksum verification
 
