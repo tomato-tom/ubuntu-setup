@@ -138,6 +138,40 @@ declare -A COLORS=(
 # tmux
 # ○○○●○
 
+# 共通で使う補完用のセッションリスト取得関数
+_get_tmux_sessions() {
+    tmux list-sessions -F "#{session_name}" 2>/dev/null
+}
+
+# 設定ファイルからグループ名を取得
+_get_tmux_groups() {
+    if [[ -f "$HOME/.config/tmux_sessions.list" ]]; then
+        grep "^\[" "$HOME/.config/tmux_sessions.list" | tr -d '[]'
+    fi
+}
+
+# ta コマンドの補完（既存セッションのみ）
+_ta_completion() {
+    local cur
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    
+    local sessions=($(_get_tmux_sessions))
+    COMPREPLY=($(compgen -W "${sessions[*]}" -- "$cur"))
+}
+complete -F _ta_completion ta
+
+# tk コマンドの補完（既存セッションのみ）
+_tk_completion() {
+    local cur
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    
+    local sessions=($(_get_tmux_sessions))
+    COMPREPLY=($(compgen -W "${sessions[*]}" -- "$cur"))
+}
+complete -F _tk_completion tk
+
 # tmuxエイリアスヘルプ
 th() {
   echo "
@@ -222,3 +256,9 @@ source "$HOME/.cargo/env"
 if [ -f ~/.bash_completion/alacritty ]; then
     source ~/.bash_completion/alacritty
 fi
+
+# note Bash completions
+if [ -f ~/.bash_completion/note ]; then
+    source ~/.bash_completion/note
+fi
+

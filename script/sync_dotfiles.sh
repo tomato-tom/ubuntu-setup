@@ -1,38 +1,27 @@
 #!/bin/bash
 # script/sync_dotfiles.sh
 # 設定ファイルを同期
+# 各ファイルの１行目にターゲットパス書いとく
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
 LOGGER="$PROJECT_ROOT/lib/logger.sh"
 [ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
 
-# souce:targetのペア
-file_pairs=(
-    "$PROJECT_ROOT/dotfiles/bashrc:$HOME/.bashrc"
-    "$PROJECT_ROOT/dotfiles/fcitx5-profile:$HOME/.config/fcitx5/profile"
-    "$PROJECT_ROOT/dotfiles/fcitx5.service:$HOME/.config/systemd/user/fcitx5.service"
-    "$PROJECT_ROOT/dotfiles/init.lua:$HOME/.config/nvim/init.lua"
-    "$PROJECT_ROOT/dotfiles/screenrc:$HOME/.screenrc"
-    "$PROJECT_ROOT/dotfiles/tmux.conf:$HOME/.tmux.conf"
-)
-
 sync() {
-    local source=$1
-    local target=$2
+    local src=$1
+    local dst=$2
     local updatefile
 
-    log info "check: $source <-> $target"
+    log debug "sync: $src ↔ $dst"
 
-    # source -> target
-    if output="$(rsync -aui "$source" "$target" 2>&1)"; then
+    if output="$(rsync -aui "$src" "$dst" 2>&1)"; then
         [ -n "$output" ] && {
             update_file="$(echo $output | awk '{print $2}')"
             log info "update: $update_file"
         }
     fi
 
-    # target -> source
-    if output="$(rsync -aui "$target" "$source" 2>&1)"; then
+    if output="$(rsync -aui "$dst" "$src" 2>&1)"; then
         [ -n "$output" ] && {
             update_file="$(echo "$output" | awk '{print $2}')"
             log info "update: $update_file"
@@ -42,10 +31,11 @@ sync() {
     return 0
 }
 
-mkdir -p "$HOME/.config/nvim"
-
-for pair in "${file_pairs[@]}"; do
-    IFS=':' read -r source target <<< "$pair"
-    sync "$source" "$target"
+for src in "$PROJECT_ROOT"/dotfiles/*; do
+    [ ! -f "$src" ] && continue
+    path="$(head -n 1 $src | cut -d' ' -f2)"
+    dst="${path/#\~/$HOME}"
+    [ -z "$dst" ] && continue
+    mkdir -p "$(dirname $dst)"
+    sync "$src" "$dst"
 done
-

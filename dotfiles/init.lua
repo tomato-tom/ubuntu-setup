@@ -35,7 +35,7 @@ vim.o.smartcase = true        -- 大文字が含まれる場合、区別する
 vim.o.incsearch = true        -- インクリメンタルサーチ
 vim.o.hlsearch = true         -- 検索結果のハイライト
 
--- 常にステータスラインを表示表示
+-- 常にステータスラインを表示
 vim.o.showmode = true
 vim.o.laststatus = 3
 
@@ -159,7 +159,10 @@ vim.api.nvim_create_autocmd("InsertLeave", {
   end
 })
 
--- GrepMd <foo>
+----------------------------
+-- プロジェクト内のマークダウンを検索して一覧表示、fgで移動したり
+-- :GrepMd <foo>
+----------------------------
 vim.api.nvim_create_user_command('GrepMd', function(opts)
   local pattern = opts.args
   if pattern == '' then
@@ -167,12 +170,20 @@ vim.api.nvim_create_user_command('GrepMd', function(opts)
     return
   end
 
+  -- プロジェクトルートを取得（Gitルート）
+  local project_root = vim.fn.system('git rev-parse --show-toplevel 2>/dev/null'):gsub('\n', '')
+  if vim.v.shell_error ~= 0 or project_root == '' then
+    project_root = '.'  -- Git管理されてなければカレントディレクトリ
+  end
+
   -- コマンド構築
   local cmd
   if vim.fn.executable('rg') == 1 then
-    cmd = string.format('rg -l -i --type md -- %s', vim.fn.shellescape(pattern))
+    cmd = string.format('cd %s && rg -l -i --type md -- %s', 
+           vim.fn.shellescape(project_root), vim.fn.shellescape(pattern))
   else
-    cmd = string.format('grep -ril --include="*.md" -- %s .', vim.fn.shellescape(pattern))
+    cmd = string.format('cd %s && grep -ril --include="*.md" -- %s .', 
+           vim.fn.shellescape(project_root), vim.fn.shellescape(pattern))
   end
 
   -- 新規一時バッファを作成（名前なし）
@@ -212,3 +223,16 @@ vim.api.nvim_create_user_command('GrepMd', function(opts)
   -- バッファを開く（新しいウィンドウ or 現在のウィンドウに表示）
   vim.api.nvim_set_current_buf(bufnr)
 end, { nargs = 1 })
+
+----------------------------
+-- マークダウンのテーブル整形
+-- ~/.config/nvim/lua/format_table.lua
+-- :FormatTable [option]
+-- A-f
+----------------------------
+package.loaded['format_table'] = nil -- 一旦キャッシュ削除しないと読み込めない？？
+require('format_table')
+vim.api.nvim_set_keymap('i', '<A-f>', '<ESC>vip:FormatTable<CR>i', { noremap = true, silent = false })
+vim.api.nvim_set_keymap('n', '<A-f>', 'vip:FormatTable<CR>', { noremap = true, silent = false })
+vim.api.nvim_set_keymap('v', '<A-f>', ':FormatTable<CR>', { noremap = true, silent = false })
+
