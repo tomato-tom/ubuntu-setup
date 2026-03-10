@@ -14,6 +14,7 @@ sync() {
 
     log debug "sync: $src ↔ $dst"
 
+
     if output="$(rsync -aui "$src" "$dst" 2>&1)"; then
         [ -n "$output" ] && {
             update_file="$(echo $output | awk '{print $2}')"
@@ -33,6 +34,10 @@ sync() {
 
 for src in "$PROJECT_ROOT"/dotfiles/*; do
     [ ! -f "$src" ] && continue
+
+    # ~/.config/fcitx5/profileは更新しても消されてしまうから除外
+    [ "$src" = "$PROJECT_ROOT/dotfiles/fcitx5-profile" ] && continue
+
     path="$(head -n 1 $src | cut -d' ' -f2)"
     dst="${path/#\~/$HOME}"
     [ -z "$dst" ] && continue
