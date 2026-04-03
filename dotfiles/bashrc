@@ -1,4 +1,6 @@
 # ~/.bashrc
+# ubuntu
+# archlinux
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
@@ -34,7 +36,11 @@ GIT_PS1_SHOWCOLORHINTS=true
 
 # Git Prompt 機能の読み込み
 if [ -f /usr/lib/git-core/git-sh-prompt ]; then
+    # ubuntu
     source /usr/lib/git-core/git-sh-prompt
+elif [ -f /usr/share/git/git-prompt.sh ]; then
+    # arch
+    source /usr/share/git/git-prompt.sh
 fi
 
 prompt_type="normal"  # default
@@ -64,7 +70,7 @@ set_prompt() {
     local at="\[${COLORS[GOLD]}\]@"
     local host="\[${COLORS[CYAN]}\]\h\[${COLORS[RESET]}\]"
     local location="\[${COLORS[AQUA]}\][\[${COLORS[PURPLE]}\]\w\[${COLORS[AQUA]}\]]\[${COLORS[RESET]}\]"
-    local str="\[${COLORS[ORANGE]}\]\\$ \[${COLORS[RESET]}\]"
+    local str="\[${COLORS[ORANGE]}\]\\$ \[$COLORS[RESET]}\]"
 
     prompt_parts+=("${user}${at}${host} ${location}")
     

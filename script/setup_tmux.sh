@@ -6,9 +6,16 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-topl
 LOGGER="$PROJECT_ROOT/lib/logger.sh"
 [ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
 
+# ubuntu
+#if ! command -v tmux; then
+#    sudo apt-get update
+#    sudo apt-get install -y tmux
+#fi
+
+# arch
 if ! command -v tmux; then
-    sudo apt-get update
-    sudo apt-get install -y tmux
+    sudo pacman -Syu
+    sudo pacman -S --noconfirm tmux
 fi
 
 # 設定

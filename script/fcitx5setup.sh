@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # script/fcitx5setup.sh
-# The script is essentially setting up Fcitx5 input method for Ubuntu 24.04.
+# Setting up Fcitx5 input method for Archlinux
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
 LOGGER="$PROJECT_ROOT/lib/logger.sh"
@@ -9,14 +9,24 @@ LOGGER="$PROJECT_ROOT/lib/logger.sh"
 # Install fcitx5 and necessary packages
 if ! command -v fcitx5 >/dev/null 2>&1; then
     log info "Installing fcitx5 packages..."
-    sudo apt-get update
-    sudo apt-get install -y fcitx5 fcitx5-mozc fcitx5-config-qt
+    sudo pacman -Syu --noconfirm
+    sudo pacman -S --noconfirm fcitx5 fcitx5-mozc fcitx5-configtool
 fi
 
-# Set fcitx5 as the input method
-if ! im-config -m | grep -w fcitx5 >/dev/null 2>&1; then
-    log info "Setting fcitx5 as input method..."
-    sudo im-config -n fcitx5
+# Set environment variables for fcitx5
+log info "Setting up fcitx5 environment variables..."
+ENV_FILE="$HOME/.config/environment.d/fcitx5.conf"
+mkdir -p "$(dirname "$ENV_FILE")"
+
+if [ ! -f "$ENV_FILE" ] || ! grep -q "GTK_IM_MODULE=fcitx" "$ENV_FILE"; then
+    cat > "$ENV_FILE" << EOF
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+EOF
+    log info "Environment variables configured in $ENV_FILE"
+else
+    log info "Environment variables already configured"
 fi
 
 update_config() {
@@ -81,3 +91,4 @@ systemctl --user --now enable fcitx5.service
 systemctl --user restart fcitx5.service
 
 log info "Fcitx5 setup completed successfully"
+log info "Please log out and log back in for changes to take effect"
