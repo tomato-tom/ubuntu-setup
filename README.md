@@ -1,7 +1,10 @@
 # Ubuntu初期設定
 
 主にUbuntuデスクトップのインストール後の初期設定スクリプト
-
+archlinuxにも順次対応予定、とりあえず手動でコピー
+.bashrc
+init.lua
+.tmux.conf
 
 ## ディレクトリ構成
 
