@@ -27,7 +27,7 @@ install_dependencies() {
         gzip \
         scdoc \
         libegl1-mesa-dev &&
-        log info "Dependencies installed."
+            log info "Dependencies installed."
 }
 
 # Rust コンパイラのインストール (rustup)

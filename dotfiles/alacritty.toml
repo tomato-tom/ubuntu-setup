@@ -1,0 +1,15 @@
+# ~/.config/alacritty/alacritty.toml
+# https://alacritty.org/config-alacritty.html
+
+[window]
+startup_mode = "Maximized"
+decorations_theme_variant = "Dark"
+opacity = 0.9
+#blur = true
+padding = { x = 3, y = 3 }
+
+[colors]
+[colors.primary]
+background = "#1e1e2e"
+foreground = "#cdd6f4"
+
