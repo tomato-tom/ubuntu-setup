@@ -107,16 +107,16 @@ install_artifacts() {
 # 設定ファイルの準備
 setup_config() {
     log info "Preparing configuration directory..."
-    # Alacritty は設定ファイルを自動作成しないため、ディレクトリのみ作成します
     CONFIG_DIR="$HOME/.config/alacritty"
     mkdir -p "$CONFIG_DIR"
-    
-    if [ ! -f "$CONFIG_DIR/alacritty.toml" ]; then
-        # 空の設定ファイルを作成（デフォルト設定で使用可能）
+
+
+    if [ ! -f "$PROJECT_ROOT/dotfiles/alacritty.toml" ]; then
         touch "$CONFIG_DIR/alacritty.toml"
-        log warn "Config file created at $CONFIG_DIR/alacritty.toml (empty defaults)."
+        log info "Config file created at $CONFIG_DIR/alacritty.toml (empty defaults)."
     else
-        log info "Config file already exists."
+        rsync -au "$PROJECT_ROOT/dotfiles/alacritty.toml" "$CONFIG_DIR/alacritty.toml"
+        log info "Config file updated."
     fi
     log info "Configuration setup complete."
 }

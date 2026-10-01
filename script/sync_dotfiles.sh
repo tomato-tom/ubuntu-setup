@@ -10,7 +10,7 @@ LOGGER="$PROJECT_ROOT/lib/logger.sh"
 sync() {
     local src=$1
     local dst=$2
-    local updatefile
+    local update_file
 
     log debug "sync: $src ↔ $dst"
 
