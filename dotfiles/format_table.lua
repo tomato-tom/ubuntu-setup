@@ -1,4 +1,4 @@
--- format_table.lua
+-- ~/.config/nvim/lua/format_table.lua
 -- テーブル状のテキストを列幅を揃えて整形するNeovimプラグイン
 --
 -- コマンド:
