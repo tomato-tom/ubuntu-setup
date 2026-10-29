@@ -65,18 +65,29 @@ log info "Current 'vi' points to: $(readlink -f "$(command -v vi)")"
 log info "Current 'vi' version: $(vi --version | head -n 1)"
 
 # Neovim configuration
-CONFIG_SOURCE="$PROJECT_ROOT/dotfiles/init.lua"
-CONFIG_PATH="$HOME/.config/nvim"
+CONFIG_DIR="$HOME/.config/nvim"
+mkdir -p "$CONFIG_DIR"
 
-mkdir -p "$CONFIG_PATH"
+copy_file() {
+    local source="$1"
+    local target="$2"
+    log info "Copying $source..."
+    if [ -f "$source" ]; then
+        cp -u "$source" "$target"
+        log info "Copied to $target"
+    else
+        log warn "File not found:$source"
+    fi
+}
 
-# 設定ファイルのコピー
-if [ -f "$CONFIG_SOURCE" ]; then
-    log info "Copying Neovim configuration file..."
-    cp -u "$CONFIG_SOURCE" "$CONFIG_PATH/init.lua"
-    log info "Neovim configuration copied to $CONFIG_PATH/init.lua"
-else
-    log warn "Configuration file not found at $CONFIG_SOURCE"
-fi
+source_file="$PROJECT_ROOT/dotfiles/init.lua"
+target_path="$CONFIG_DIR/$(basename $source_file)"
+copy_file "$source_file" "$target_path"
+
+source_file="$PROJECT_ROOT/dotfiles/format_table.lua"
+mkdir -p "$CONFIG_DIR/lua"
+target_path="$CONFIG_DIR/lua/$(basename $source_file)"
+copy_file "$source_file" "$target_path"
+
 
 log info "Neovim setup completed successfully!"
