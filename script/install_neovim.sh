@@ -73,7 +73,7 @@ copy_file() {
     local target="$2"
     log info "Copying $source..."
     if [ -f "$source" ]; then
-        cp -u "$source" "$target"
+        install -Dm644 "$source" "$target"
         log info "Copied to $target"
     else
         log warn "File not found:$source"
@@ -81,13 +81,12 @@ copy_file() {
 }
 
 source_file="$PROJECT_ROOT/dotfiles/init.lua"
-target_path="$CONFIG_DIR/$(basename $source_file)"
+target_path="$CONFIG_DIR/$(basename "$source_file")"
 copy_file "$source_file" "$target_path"
 
 source_file="$PROJECT_ROOT/dotfiles/format_table.lua"
-mkdir -p "$CONFIG_DIR/lua"
-target_path="$CONFIG_DIR/lua/$(basename $source_file)"
+target_path="$CONFIG_DIR/lua/$(basename "$source_file")"
 copy_file "$source_file" "$target_path"
 
-
 log info "Neovim setup completed successfully!"
+
