@@ -1,7 +1,7 @@
 #!/bin/bash
 # script/install_neovim.sh
 # Installing and setup Neovim
-# Ubuntu
+# Ubuntu debian archlinux Fedora
 
 set -euo pipefail
 
@@ -9,11 +9,51 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-topl
 LOGGER="$PROJECT_ROOT/lib/logger.sh"
 [ -f "$LOGGER" ] && source $LOGGER $0 || exit 1
 
+# --- OS 検出 ---
+detect_os() {
+    if [ -f /etc/fedora-release ]; then
+        if [ -f /run/ostree-booted ]; then
+            echo "silverblue"
+        else
+            echo "fedora"
+        fi
+    elif [ -f /etc/debian_version ]; then
+        echo "debian"
+    elif [ -f /etc/arch-release ]; then
+        echo "arch"
+    else
+        echo "unknown"
+    fi
+}
+OS="$(detect_os)"
+log info "Detected OS: $OS"
+
+# --- パッケージ操作の抽象化 ---
+pkg_install_neovim() {
+    case "$OS" in
+        silverblue)
+            log warn "Run inside toolbox: 'toolbox enter' then re-run $0"
+            exit 1
+            ;;
+        fedora)
+            sudo dnf install -y neovim
+            ;;
+        debian)
+            sudo apt update && sudo apt install -y neovim
+            ;;
+        arch)
+            sudo pacman -Syu --needed --noconfirm neovim
+            ;;
+        *)
+            log error "Unsupported OS: $OS"; exit 1
+            ;;
+    esac
+}
+
 # Neovim のインストール
 if ! command -v nvim &>/dev/null; then
     log info "Installing Neovim..."
-    sudo apt update
-    sudo apt install -y neovim
+    pkg_install_neovim
 else
     log info "Neovim is already installed."
 fi
@@ -27,37 +67,32 @@ fi
 
 log info "Neovim found at: $NVIM_PATH"
 
-update_vi() {
-    log info "Setting up 'vi' to use Neovim via update-alternatives..."
-    sudo update-alternatives --install /usr/bin/vi vi "$NVIM_PATH" 100
-    sudo update-alternatives --set vi "$NVIM_PATH"
-    log info "'vi' has been set to use Neovim."
-}
-
-# vi コマンドをnvimに設定
-if command -v vi &>/dev/null; then
-    log info "'vi' command is already installed."
-    
-    # 現在の設定を確認（update-alternatives で管理されている場合）
+# --- vi を nvim に向ける（環境別） ---
+if command -v update-alternatives &>/dev/null; then
+    # --- alternatives があるOS（Fedora / Debian / Ubuntu ---
     if update-alternatives --query vi &>/dev/null; then
-        CURRENT_VI=$(update-alternatives --query vi 2>/dev/null | awk -F': ' '/Value:/ {print $2}')
-        
-        if [ "$CURRENT_VI" = "$NVIM_PATH" ]; then
+        current="$(update-alternatives --query vi 2>/dev/null | awk -F': ' '/Value:/ {print $2}')"
+        if [ "$current" = "$NVIM_PATH" ]; then
             log info "'vi' is already set to Neovim via update-alternatives."
         else
-            update_vi
+            sudo update-alternatives --install /usr/bin/vi vi "$NVIM_PATH" 100
+            sudo update-alternatives --set vi "$NVIM_PATH"
+            log info "'vi' has been set to Neovim via update-alternatives."
         fi
     else
-        # update-alternatives で管理されていない場合
-        CURRENT_VI=$(readlink -f "$(command -v vi)")
-        if [ "$CURRENT_VI" = "$NVIM_PATH" ]; then
-            log info "'vi' is already linked to Neovim."
-        else
-            update_vi
-        fi
+        # alternatives はあるが vi 未登録
+        sudo update-alternatives --install /usr/bin/vi vi "$NVIM_PATH" 100
+        sudo update-alternatives --set vi "$NVIM_PATH"
+        log info "Registered and set 'vi' to Neovim via update-alternatives."
     fi
 else
-    update_vi
+    # --- alternatives がないOS（Arch） ---
+    if [ "$(readlink -f /usr/local/bin/vi 2>/dev/null)" = "$NVIM_PATH" ]; then
+        log info "'vi' is already linked to Neovim at /usr/local/bin/vi."
+    else
+        sudo ln -sf "$NVIM_PATH" /usr/local/bin/vi
+        log info "Linked /usr/local/bin/vi -> $NVIM_PATH"
+    fi
 fi
 
 # 設定の確認
@@ -81,12 +116,10 @@ copy_file() {
 }
 
 source_file="$PROJECT_ROOT/dotfiles/init.lua"
-target_path="$CONFIG_DIR/$(basename "$source_file")"
-copy_file "$source_file" "$target_path"
+copy_file "$source_file" "$CONFIG_DIR/$(basename "$source_file")"
 
 source_file="$PROJECT_ROOT/dotfiles/format_table.lua"
-target_path="$CONFIG_DIR/lua/$(basename "$source_file")"
-copy_file "$source_file" "$target_path"
+copy_file "$source_file" "$CONFIG_DIR/lua/$(basename "$source_file")"
 
 log info "Neovim setup completed successfully!"
 
